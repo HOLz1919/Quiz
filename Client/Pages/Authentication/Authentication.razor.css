@@ -1,0 +1,21 @@
+﻿.authentication-container {
+    background-color: #fff;
+    margin: auto;
+    width: 70%;
+    border: 2px solid #052867;
+    border-radius: 25px;
+}
+
+@media screen and (max-width: 1140px) {
+    .authentication-container {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .authentication-container {
+        width: 90%;
+    }
+}
+
+

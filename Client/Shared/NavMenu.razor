@@ -1,0 +1,79 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">MasterQuiz</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <AuthorizeView>
+            <NotAuthorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match=NavLinkMatch.All>
+                        <span class="oi oi-home" aria-hidden="true"></span> Strona Główna
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/game">
+                        <span class="oi oi-monitor" aria-hidden="true"></span> Rozgrywka
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/challanges">
+                        <span class="oi oi-spreadsheet" aria-hidden="true"></span> Wyzwania
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/ranking">
+                        <span class="oi oi-bar-chart" aria-hidden="true"></span> Ranking
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/statistics">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Statystyki
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin, SuperAdmin">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" @onclick="() => expandSubNav = !expandSubNav" style="cursor: pointer;">
+                    <span class="oi oi-pencil" aria-hidden="true"></span> Panel Administracyjny
+                </NavLink>
+                @if (expandSubNav)
+                {
+                    <NavLink class="expand-menu px-4" href="/administration/users" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-people" aria-hidden="true"></span> Użytkownicy
+                    </NavLink>
+                    <NavLink class="expand-menu px-4" href="/administration/questions" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-question-mark" aria-hidden="true"></span> Pytania
+                    </NavLink>
+                    <NavLink class="expand-menu px-4" href="/administration/categories" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-list" aria-hidden="true"></span> Kategorie
+                    </NavLink>
+                    <NavLink class="expand-menu px-4" href="/administration/challanges" Match="NavLinkMatch.Prefix">
+                        <span class="oi oi-spreadsheet" aria-hidden="true"></span> Wyzwania
+                    </NavLink>
+                }
+            </li>
+        </AuthorizeView>
+    </ul>
+
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private bool expandSubNav = false;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

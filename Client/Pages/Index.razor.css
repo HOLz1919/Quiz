@@ -1,0 +1,26 @@
+﻿
+
+header {
+    background-color: #052867;
+    color: white;
+    border: 4px solid #fff;
+    border-radius: 25px;
+}
+
+
+img {
+    border-radius: 15px;
+}
+
+.responsive-img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}
+
+a {
+    width: 100%;
+    background-color: #052867;
+}
+
+

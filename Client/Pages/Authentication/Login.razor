@@ -1,0 +1,41 @@
+﻿@page "/login"
+
+
+@if (ShowAuthError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+
+<EditForm Model="@loginModel"  OnValidSubmit="ExecuteLogin" >
+
+    <DataAnnotationsValidator />
+    <div class="row my-2 mx-2">
+        <div class="col-25">
+            <label for="username">Nazwa użytkownika</label>
+        </div>
+        <div class="col-75">
+            <InputText name="username" id="username" class="form-control" @bind-Value="@loginModel.Username"></InputText>
+            <ValidationMessage For="@(() => loginModel.Username)" />
+        </div>
+    </div>
+    <div class="row my-2 mx-2">
+        <div class="col-25">
+            <label for="password">Hasło</label>
+        </div>
+        <div class="col-75">
+            <InputText name="password" id="password" class="form-control" type="password" @bind-Value="@loginModel.Password"></InputText>
+            <ValidationMessage For="@(() => loginModel.Password)" />
+        </div>
+    </div>
+    <div class="d-flex justify-content-center flex-row my-2">
+        <input type="submit" class="btn btn-primary" value="Zaloguj się">
+    </div>
+</EditForm>
+
+
+@code{
+
+
+}

@@ -1,0 +1,88 @@
+﻿@page "/administration/users/edit/{userId:guid}"
+@*@using Microsoft.AspNetCore.Components
+@using Models.User;
+
+
+@inject Services.User.IUserService UserService
+
+
+
+<div class="edit-container">
+    <div class="my-4">
+        <EditForm Model="@user">
+            <input type="hidden" name="id" value="@user.Id" />
+            <input type="hidden" name="password" value="@user.Password" />
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="username">Nazwa użytkownika</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="username" id="username" class="form-control" @bind-Value="@user.Username"></InputText>
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="email">Email</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="email" id="email" class="form-control" type="email" @bind-Value="@user.Email"></InputText>
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="firstname">Imię</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="firstname" id="firstname" class="form-control" @bind-Value="@user.FirstName"></InputText>
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="lastname">Nazwisko</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="lastname" id="lastname" class="form-control" @bind-Value="@user.LastName"></InputText>
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="money">Monety</label>
+                </div>
+                <div class="col-75">
+                    <input name="money" id="money" class="form-control" value="@user.Money" />
+                </div>
+            </div>
+            <div class="d-flex justify-content-end flex-row my-2">
+                <input type="submit" class="btn btn-primary mx-2" value="Zapisz">
+                <button class="btn btn-secondary mx-2" type="button">Anuluj</button>
+            </div>
+        </EditForm>
+
+
+
+
+    </div>
+</div>
+
+
+
+@code{
+    [Parameter]
+    public Guid userId { get; set; }
+
+    private User user;
+
+    protected override void OnInitialized()
+    {
+        userId = userId !=Guid.Empty ? userId:  Guid.Empty;
+        user = UserService.Get(userId).Result;
+    }
+
+
+
+
+
+}*@
