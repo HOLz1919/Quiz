@@ -68,6 +68,7 @@ namespace Quiz.Server
             });
 
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
 
             //services.AddIdentityServer()

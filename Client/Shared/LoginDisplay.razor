@@ -9,7 +9,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="authentication/profile">@context.User.FindFirst(ClaimTypes.Name).Value </a>
+        <a href="account">@context.User.FindFirst(ClaimTypes.Name).Value </a>
         <a href="logout">Wyloguj się</a>
     </Authorized>
     <NotAuthorized>

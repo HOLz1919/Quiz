@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace Quiz.Server.Controllers.Administration
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext db;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly ApplicationDbContext _db;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public UserController(ApplicationDbContext db, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
-            this.db = db;
-            this.roleManager = roleManager;
-            this.userManager = userManager;
+            this._db = db;
+            this._roleManager = roleManager;
+            this._userManager = userManager;
         }
 
 
