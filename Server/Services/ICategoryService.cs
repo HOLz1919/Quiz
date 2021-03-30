@@ -10,9 +10,9 @@ namespace Quiz.Server.Services
     public interface ICategoryService
     {
         Task<ResponseDto> AddAsync(Category category);
-        Task<Category> Get(Guid id);
+        Task<Category> GetAsync(Guid id);
         Task<ResponseDto> EditAsync(Category category);
         Task<ResponseDto> DeleteAsync(Guid id);
-        Task<List<Category>> Get();
+        Task<List<Category>> GetAsync();
     }
 }

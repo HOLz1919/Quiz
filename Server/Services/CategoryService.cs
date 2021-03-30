@@ -89,12 +89,12 @@ namespace Quiz.Server.Services
             return responseDto;
         }
 
-        public async  Task<List<Category>> Get()
+        public async  Task<List<Category>> GetAsync()
         {
             return await _db.Categories.ToListAsync();
         }
 
-        public async Task<Category> Get(Guid id)
+        public async Task<Category> GetAsync(Guid id)
         {
             var category = await _db.Categories.SingleAsync(item => item.Id == id);
             return category != null ? category : null;

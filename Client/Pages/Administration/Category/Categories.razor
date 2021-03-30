@@ -1,12 +1,6 @@
 ﻿@page "/administration/categories"
-@*
-    @using Models.Category;
-    @inject Services.Category.ICategoryService CategoryService
-    @using System.Linq.Dynamic.Core
-    @inject TooltipService tooltipService
-    @inject DialogService DialogService
-    @inject NavigationManager NavigationManager
 
+    
 
     <div>
         <RadzenTooltip />
@@ -18,18 +12,21 @@
 
 
     <div class="categories-container">
-        <RadzenGrid Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Category" PageSize="50" ColumnWidth="400px">
+        <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
+
+
+        <RadzenGrid Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.Category" PageSize="50" ColumnWidth="400px">
             <Columns>
-                <RadzenGridColumn TItem="Category" Property="Id" Title="CategoryId" Visible="false" />
-                <RadzenGridColumn TItem="Category" Property="Name" Title="Nazwa" />
-                <RadzenGridColumn TItem="Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Id" Title="CategoryId" Visible="false" />
+                <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Name" Title="Nazwa" />
+                <RadzenGridColumn TItem="Quiz.Shared.Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                     <Template Context="category">
                         <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(category))"
                                       MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))">
                         </RadzenButton>
                     </Template>
                 </RadzenGridColumn>
-                <RadzenGridColumn TItem="Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <RadzenGridColumn TItem="Quiz.Shared.Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                     <Template Context="category">
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"
                                       Click=@(args => ShowInlineDialog(category.Id,category.Name))
@@ -44,62 +41,30 @@
 
 
     @code {
-        int count;
-        IEnumerable<Category> categories;
-
-
-        async Task LoadData(LoadDataArgs args)
-        {
-            categories = await CategoryService.GetCategories();
-
-            if (!string.IsNullOrEmpty(args.Filter))
-            {
-                categories = categories.AsQueryable().Where(args.Filter).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(args.OrderBy))
-            {
-                categories = categories.AsQueryable().OrderBy(args.OrderBy).ToList();
-            }
-
-            categories = categories.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
-
-            count = categories.Count();
-
-            await InvokeAsync(StateHasChanged);
-        }
-
-        async Task Edit(Category category)
-        {
-            await Task.Run(() => NavigationManager.NavigateTo("/administration/users/edit/" + category.Id));
-        }
-
-
-
-
         void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string message = "") => tooltipService.Open(elementReference, message, options);
 
         async Task ShowInlineDialog(Guid categoryId, string name) => await DialogService.OpenAsync("Usuwanie", ds =>
         @<div>
-            <p Style="margin-bottom: 1rem">Czy na pewno chcesz usunąć tą kategorię? <b> @name </b></p>
+            <p Style = "margin-bottom: 1rem" > Czy na pewno chcesz usunąć tą kategorię? <b> @name </b></p>
             <div class="d-flex justify-content-center">
-                <RadzenButton Text="Tak" Click="(() => { ds.Close(true); Close(true, categoryId); })" Style=" margin: 0 10px 10px 10px" />
-                <RadzenButton Text="Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+                <RadzenButton Text = "Tak" Click="(() => { ds.Close(true); Close(true, categoryId); })" Style=" margin: 0 10px 10px 10px" />
+                <RadzenButton Text = "Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
             </div>
         </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
 
 
 
-    void Close(bool result, Guid categoryId)
-    {
-      if (result)
-      {
+        void Close(bool result, Guid categoryId)
+        {
+            if (result)
+            {
 
-      }
+            }
+
+        }
+
+
+
+
 
     }
-
-
-
-
-    }*@

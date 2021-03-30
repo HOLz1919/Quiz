@@ -26,15 +26,16 @@ namespace Quiz.Server.Controllers.Administration
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(categoryService.Get());
+            var result = await categoryService.GetAsync();
+            return Ok(result);
         }
 
-        [HttpGet]
-        public IActionResult Get(Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get([FromQuery] Guid id)
         {
-            var category = categoryService.Get(id);
+            var category = await categoryService.GetAsync(id);
             if (category == null)
                 return NotFound(new { ErrorMessage = "Not found category with that id" });
             return Ok(category);
@@ -57,8 +58,8 @@ namespace Quiz.Server.Controllers.Administration
         }
 
 
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete(Guid id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete([FromQuery] Guid id)
         {
 
             var result = await categoryService.DeleteAsync(id);
