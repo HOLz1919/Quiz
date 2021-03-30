@@ -29,19 +29,5 @@ namespace Quiz.Server.Controllers.Administration
 
 
 
-
-        //[HttpPost("CreateRole")]
-        //public async Task<IActionResult> CreateRole()
-        //{
-
-        //  IdentityResult result= await roleManager.CreateAsync(new IdentityRole { Name = "User" });
-
-        //    if (result.Succeeded) return Ok();
-
-        //    return NotFound();
-
-
-        //}
-
     }
 }

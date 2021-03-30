@@ -12,5 +12,6 @@ namespace Quiz.Client.Services
         Task<RegistrationResponseDto> RegisterUser(RegistrationModel registrationModel);
         Task<AuthResponseDto> Login(LoginModel loginModel);
         Task Logout();
+        Task<string> RefreshToken();
     }
 }

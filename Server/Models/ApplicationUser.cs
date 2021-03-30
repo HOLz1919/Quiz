@@ -15,5 +15,9 @@ namespace Quiz.Server.Models
         public string LastName { get; set; }
         [Required]
         public int Money { get; set; }
+
+        public string RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
+
     }
 }

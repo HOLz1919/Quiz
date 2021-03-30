@@ -52,7 +52,11 @@ namespace Quiz.Client.Services
             var result = JsonSerializer.Deserialize<AuthResponseDto>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (!authResult.IsSuccessStatusCode)
                 return result;
+
+
             await _localStorage.SetItemAsync("authToken", result.Token);
+            await _localStorage.SetItemAsync("refreshToken", result.RefreshToken);
+
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
             return new AuthResponseDto { IsAuthSuccessful = true };
@@ -60,8 +64,28 @@ namespace Quiz.Client.Services
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");
+            await _localStorage.RemoveItemAsync("refreshToken");
+
             ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
             _client.DefaultRequestHeaders.Authorization = null;
+        }
+
+        public async Task<string> RefreshToken()
+        {
+            var token = await _localStorage.GetItemAsync<string>("authToken");
+            var refreshToken = await _localStorage.GetItemAsync<string>("refreshToken");
+            var tokenDto = JsonSerializer.Serialize(new RefreshTokenDto { Token = token, RefreshToken = refreshToken });
+            var bodyContent = new StringContent(tokenDto, Encoding.UTF8, "application/json");
+            var refreshResult = await _client.PostAsync("api/token/refresh", bodyContent);
+            var refreshContent = await refreshResult.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<AuthResponseDto>(refreshContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (!refreshResult.IsSuccessStatusCode)
+                throw new ApplicationException("Something went wrong during the refresh token action");
+            await _localStorage.SetItemAsync("authToken", result.Token);
+            await _localStorage.SetItemAsync("refreshToken", result.RefreshToken);
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            return result.Token;
         }
 
 

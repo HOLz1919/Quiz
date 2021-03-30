@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Quiz.Server.Data;
 using Quiz.Server.Models;
+using Quiz.Server.Services;
 using System.Linq;
 using System.Text;
 
@@ -65,6 +66,8 @@ namespace Quiz.Server
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["securityKey"]))
                 };
             });
+
+            services.AddScoped<ITokenService, TokenService>();
 
 
             //services.AddIdentityServer()

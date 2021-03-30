@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Quiz.Server.Data;
 using Quiz.Server.Models;
+using Quiz.Server.Services;
 using Quiz.Shared;
 using Quiz.Shared.Responses;
 using System;
@@ -25,14 +26,15 @@ namespace Quiz.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IConfigurationSection _jwtSettings;
+        private readonly ITokenService _tokenService;
 
-        public AuthenticationController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthenticationController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService)
         {
             _db = db;
             _userManager = userManager;
             _configuration = configuration;
             _jwtSettings = _configuration.GetSection("JwtSettings");
-           
+            _tokenService = tokenService;
         }
 
 
@@ -63,13 +65,22 @@ namespace Quiz.Server.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel lognModel)
         {
             var user = await _userManager.FindByNameAsync(lognModel.Username);
+
             if (user == null || !await _userManager.CheckPasswordAsync(user, lognModel.Password))
                 return Unauthorized(new AuthResponseDto { ErrorMessage = "Invalid Authentication" });
-            var signingCredentials = GetSigningCredentials();
-            var claims = await GetClaims(user);
-            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+
+            var signingCredentials = _tokenService.GetSigningCredentials();
+            var claims = await _tokenService.GetClaims(user);
+            var tokenOptions = _tokenService.GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
+
+            user.RefreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+
+            await _userManager.UpdateAsync(user);
+
+
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken });
         }
 
 

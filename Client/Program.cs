@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Quiz.Client
 {
@@ -23,25 +24,26 @@ namespace Quiz.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient("Quiz.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-
-            // Supply HttpClient instances that include access tokens when making requests to the server project
-            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Quiz.ServerAPI"));
-            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            }
+            .EnableIntercept(sp));
+    
 
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-            builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-
-
-         //   builder.Services.AddApiAuthorization();
-
+            builder.Services.AddScoped<RefreshTokenService>();
+            builder.Services.AddScoped<HttpInterceptorService>();
 
             builder.Services.AddScoped<DialogService>();
             builder.Services.AddScoped<NotificationService>();
             builder.Services.AddScoped<TooltipService>();
             builder.Services.AddScoped<ContextMenuService>();
+
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddHttpClientInterceptor();
 
 
             await builder.Build().RunAsync();
