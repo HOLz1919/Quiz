@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Linq.Dynamic.Core;
 using Radzen;
 using Quiz.Shared;
-
+using Radzen.Blazor;
 
 namespace Quiz.Client.Pages.Administration.Category
 {
@@ -15,7 +15,9 @@ namespace Quiz.Client.Pages.Administration.Category
     {
         [Inject]
         public ICategoryService CategoryService { get; set; }
+        [Inject]
         public TooltipService tooltipService { get; set; }
+        [Inject]
         public DialogService DialogService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
@@ -23,6 +25,7 @@ namespace Quiz.Client.Pages.Administration.Category
 
         int count;
         IEnumerable<Quiz.Shared.Category> categories;
+        RadzenGrid<Quiz.Shared.Category> categoriesGrid;
 
 
         async Task LoadData(LoadDataArgs args)
@@ -48,13 +51,14 @@ namespace Quiz.Client.Pages.Administration.Category
 
         async Task Edit(Quiz.Shared.Category category)
         {
-            await Task.Run(() => NavigationManager.NavigateTo("/administration/users/edit/" + category.Id));
+            await Task.Run(() => NavigationManager.NavigateTo("/administration/categories/edit/" + category.Id));
         }
 
         void Add()
         {
             NavigationManager.NavigateTo("/administration/categories/add");
         }
+
 
 
        

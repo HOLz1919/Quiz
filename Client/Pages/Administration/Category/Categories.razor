@@ -15,7 +15,7 @@
         <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
 
 
-        <RadzenGrid Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.Category" PageSize="50" ColumnWidth="400px">
+        <RadzenGrid @ref="categoriesGrid" Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.Category" PageSize="50" ColumnWidth="400px">
             <Columns>
                 <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Id" Title="CategoryId" Visible="false" />
                 <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Name" Title="Nazwa" />
@@ -47,17 +47,22 @@
         @<div>
             <p Style = "margin-bottom: 1rem" > Czy na pewno chcesz usunąć tą kategorię? <b> @name </b></p>
             <div class="d-flex justify-content-center">
-                <RadzenButton Text = "Tak" Click="(() => { ds.Close(true); Close(true, categoryId); })" Style=" margin: 0 10px 10px 10px" />
+                <RadzenButton Text = "Tak" Click="(async() => { ds.Close(true); await Close(true, categoryId); })" Style=" margin: 0 10px 10px 10px" />
                 <RadzenButton Text = "Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
             </div>
         </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
 
 
 
-        void Close(bool result, Guid categoryId)
+        async Task Close(bool result, Guid categoryId)
         {
             if (result)
             {
+                var response = await CategoryService.Delete(categoryId);
+                if (response.IsSuccessful)
+                {
+                    await categoriesGrid.Reload();
+                }
 
             }
 

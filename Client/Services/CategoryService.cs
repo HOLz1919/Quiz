@@ -41,7 +41,7 @@ namespace Quiz.Client.Services
 
         public async Task<ResponseDto> Delete(Guid id)
         {
-            var response = await _client.DeleteAsync("api/category/add/" + id);
+            var response = await _client.DeleteAsync("api/category/delete/" + id);
             var responseContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {

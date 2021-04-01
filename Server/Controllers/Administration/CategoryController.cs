@@ -33,7 +33,7 @@ namespace Quiz.Server.Controllers.Administration
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get([FromQuery] Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var category = await categoryService.GetAsync(id);
             if (category == null)
@@ -59,7 +59,7 @@ namespace Quiz.Server.Controllers.Administration
 
 
         [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete([FromQuery] Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
 
             var result = await categoryService.DeleteAsync(id);
