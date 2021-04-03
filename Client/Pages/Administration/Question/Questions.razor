@@ -1,4 +1,75 @@
 ﻿@page "/administration/questions"
 
-<h1>Hello, world! siemahujcu</h1>
 
+
+<div>
+    <RadzenTooltip />
+</div>
+
+<div>
+    <RadzenDialog />
+</div>
+
+
+<div class="questions-container">
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
+
+
+    <RadzenGrid @ref="questionsGrid" Count="@count" Data="@questions" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.QuestionView" PageSize="50" ColumnWidth="400px">
+        <Columns>
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="Id" Title="QuestionId" Visible="false" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="Content" Title="Treść Pytania" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Context="question" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <Template Context="question">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(question))"
+                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Context="question" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <Template Context="question">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"
+                                  Click=@(args => ShowInlineDialog(question.Id,question.Content))
+                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Usuń"))">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+
+</div>
+
+
+@code {
+    void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string message = "") => tooltipService.Open(elementReference, message, options);
+
+    async Task ShowInlineDialog(Guid questionId, string name) => await DialogService.OpenAsync("Usuwanie", ds =>
+    @<div>
+        <p Style="margin-bottom: 1rem"> Czy na pewno chcesz usunąć te pytanie? <b> @name </b></p>
+        <div class="d-flex justify-content-center">
+            <RadzenButton Text="Tak" Click="(async() => { ds.Close(true); await Close(true, questionId); })" Style=" margin: 0 10px 10px 10px" />
+            <RadzenButton Text="Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+        </div>
+    </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
+
+
+
+async Task Close(bool result, Guid questionId)
+{
+  if (result)
+  {
+      var response = await QuestionService.Delete(questionId);
+      if (response.IsSuccessful)
+      {
+          await questionsGrid.Reload();
+      }
+
+  }
+
+}
+
+
+
+
+
+}

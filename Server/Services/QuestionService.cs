@@ -102,7 +102,15 @@ namespace Quiz.Server.Services
 
         public async Task<List<QuestionView>> GetAsync()
         {
-            return await _db.QuestionViews.ToListAsync();
+            try
+            {
+                var result = await _db.QuestionViews.ToListAsync();
+                return result;
+            }catch(Exception ex)
+            {
+                return null;
+            }
+           
         }
 
         public async Task<Question> GetAsync(Guid id)
