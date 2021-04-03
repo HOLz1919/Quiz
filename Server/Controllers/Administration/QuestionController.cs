@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quiz.Server.Data;
 using Quiz.Server.Services;
 using Quiz.Shared;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,43 +13,44 @@ namespace Quiz.Server.Controllers.Administration
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,SuperAdmin")]
-    public class CategoryController : ControllerBase
+    public class QuestionController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
         private readonly ICategoryService _categoryService;
+        private readonly IQuestionService _questionService;
 
-        public CategoryController(ApplicationDbContext db, ICategoryService categoryService)
+        public QuestionController(ApplicationDbContext db, ICategoryService categoryService, IQuestionService questionService)
         {
-            this._db = db;
-            this._categoryService = categoryService;
+            _db = db;
+            _categoryService = categoryService;
+            _questionService = questionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _categoryService.GetAsync();
+            var result = await _questionService.GetAsync();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var category = await _categoryService.GetAsync(id);
-            if (category == null)
-                return NotFound(new { ErrorMessage = "Not found category with that id" });
-            return Ok(category);
+            var question = await _questionService.GetAsync(id);
+            if (question == null)
+                return NotFound(new { ErrorMessage = "Not found question with that id" });
+            return Ok(question);
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> Add([FromBody] Category category)
+        public async Task<IActionResult> Add([FromBody] QuestionVM questionVM)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { ErrorMessage = "Model is not Valid" });
             }
 
-            var result = await _categoryService.AddAsync(category);
+            var result = await _questionService.AddAsync(questionVM);
 
             if (!result.IsSuccessful)
                 return BadRequest(result);
@@ -62,7 +63,7 @@ namespace Quiz.Server.Controllers.Administration
         public async Task<IActionResult> Delete(Guid id)
         {
 
-            var result = await _categoryService.DeleteAsync(id);
+            var result = await _questionService.DeleteAsync(id);
             if (!result.IsSuccessful)
                 return BadRequest(result);
 
@@ -70,20 +71,22 @@ namespace Quiz.Server.Controllers.Administration
         }
 
         [HttpPut("Edit")]
-        public async Task<IActionResult> Edit([FromBody] Category category)
+        public async Task<IActionResult> Edit([FromBody] QuestionVM questionVM)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(new { ErrorMessage = "Model is not Valid" });
             }
 
-            var result = await _categoryService.EditAsync(category);
+            var result = await _questionService.EditAsync(questionVM);
 
             if (!result.IsSuccessful)
                 return BadRequest(result);
 
             return Ok(result);
         }
+
+
 
 
 

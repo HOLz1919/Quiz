@@ -16,5 +16,7 @@ namespace Quiz.Shared
         [Display(Name="Nazwa kategorii")]
         public string Name { get; set; }
 
+        public ICollection<Question> Questions { get; set; }
+
     }
 }
