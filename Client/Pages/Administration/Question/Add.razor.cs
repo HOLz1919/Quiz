@@ -10,7 +10,7 @@ namespace Quiz.Client.Pages.Administration.Question
 {
     public partial class Add
     {
-        private QuestionVM QuestionVM = new QuestionVM();
+        private QuestionVM QuestionVM = new QuestionVM() {Answers=new List<Quiz.Shared.Answer>() };
         private List<Quiz.Shared.Category> categories = new List<Quiz.Shared.Category>(); 
         [Inject]
         public ICategoryService CategoryService { get; set; }
@@ -23,16 +23,26 @@ namespace Quiz.Client.Pages.Administration.Question
         public async Task OnSubmit()
         {
             ShowError = false;
-            var result = await QuestionService.Add(QuestionVM);
-            if (!result.IsSuccessful)
+            int count = QuestionVM.Answers.Where(item => item.IsCorrect == true).Count();
+            if (count==1)
             {
-                Error = result.ErrorMessage;
-                ShowError = true;
+                var result = await QuestionService.Add(QuestionVM);
+                if (!result.IsSuccessful)
+                {
+                    Error = result.ErrorMessage;
+                    ShowError = true;
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/administration/questions");
+                }
             }
             else
             {
-                NavigationManager.NavigateTo("/administration/questions");
+                ShowError = true;
+                Error = "Musisz wybrać jedną poprawną odpowiedź";
             }
+     
         }
 
 
@@ -40,8 +50,29 @@ namespace Quiz.Client.Pages.Administration.Question
         {
             var result = await CategoryService.Get();
             categories = result;
+            if (categories != null && categories.Count() > 0) QuestionVM.CategoryId = categories[0].Id;
             await base.OnInitializedAsync();
         }
+
+        private void AddAnswer()
+        {
+           QuestionVM.Answers.Add(new Quiz.Shared.Answer() { Content=null});
+        }
+
+        //void UnCheckOthers(Quiz.Shared.Answer answer, object checkedValue)
+        //{
+        //    var tempanswer = QuestionVM.Answers.SingleOrDefault(item => item == answer);
+        //    if (tempanswer != null && (bool)checkedValue)
+        //    {
+        //        QuestionVM.Answers.ForEach(item => item.IsCorrect = false);
+        //        tempanswer.IsCorrect = true;
+        //    }
+           
+        //}
+
+
+
+
 
 
     }

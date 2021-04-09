@@ -91,12 +91,19 @@ namespace Quiz.Server.Services
 
         public async  Task<List<Category>> GetAsync()
         {
-            return await _db.Categories.ToListAsync();
+            var result = await _db.Categories.ToListAsync();
+            result.ForEach(item => { item.Matches = null; item.Questions = null; });
+            return result;
         }
 
         public async Task<Category> GetAsync(Guid id)
         {
             var category = await _db.Categories.SingleAsync(item => item.Id == id);
+            if (category != null)
+            {
+                category.Questions = null;
+                category.Matches = null;
+            }
             return category != null ? category : null;
         }
     }

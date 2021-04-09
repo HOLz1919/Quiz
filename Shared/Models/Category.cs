@@ -17,6 +17,7 @@ namespace Quiz.Shared
         public string Name { get; set; }
 
         public ICollection<Question> Questions { get; set; }
+        public ICollection<Match> Matches { get; set; }
 
     }
 }

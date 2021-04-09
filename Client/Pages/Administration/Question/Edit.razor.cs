@@ -12,7 +12,8 @@ namespace Quiz.Client.Pages.Administration.Question
     {
         [Parameter]
         public Guid QuestionId { get; set; }
-        public QuestionVM Question = new QuestionVM();
+        public QuestionVM Question = new QuestionVM() { Answers = new List<Quiz.Shared.Answer>() };
+        private List<Quiz.Shared.Category> categories = new List<Quiz.Shared.Category>();
         [Inject]
         public ICategoryService CategoryService { get; set; }
         [Inject]
@@ -24,24 +25,42 @@ namespace Quiz.Client.Pages.Administration.Question
 
         public async Task OnSubmit()
         {
+
             ShowError = false;
-            var result = await QuestionService.Edit(Question);
-            if (!result.IsSuccessful)
+            int count = Question.Answers.Where(item => item.IsCorrect == true).Count();
+            if (count == 1)
             {
-                Error = result.ErrorMessage;
-                ShowError = true;
+                var result = await QuestionService.Edit(Question);
+                if (!result.IsSuccessful)
+                {
+                    Error = result.ErrorMessage;
+                    ShowError = true;
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/administration/questions");
+                }
             }
             else
             {
-                NavigationManager.NavigateTo("/administration/questions");
+                ShowError = true;
+                Error = "Musisz wybrać jedną poprawną odpowiedź";
             }
+
         }
 
         protected override async Task OnInitializedAsync()
         {
-            var result =  await QuestionService.Get(QuestionId);
-            Question = result;
+            var result = await CategoryService.Get();
+            categories = result;
+            var resultQuestion =  await QuestionService.Get(QuestionId);
+            Question = resultQuestion;
             await base.OnInitializedAsync();
+        }
+
+        private void AddAnswer()
+        {
+            Question.Answers.Add(new Quiz.Shared.Answer() { Content = null });
         }
 
 

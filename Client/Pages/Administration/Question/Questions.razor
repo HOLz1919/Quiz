@@ -15,10 +15,13 @@
     <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
 
 
-    <RadzenGrid @ref="questionsGrid" Count="@count" Data="@questions" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.QuestionView" PageSize="50" ColumnWidth="400px">
+    <RadzenGrid @ref="questionsGrid" Count="@count" Data="@questions" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.QuestionView" PageSize="50" ColumnWidth="200px" AllowColumnResize="true">
         <Columns>
             <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="Id" Title="QuestionId" Visible="false" />
             <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="Content" Title="Treść Pytania" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="CategoryName" Title="Kategoria" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="Answers" Title="Odpowiedzi" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Property="CorrectAnswer" Title="Poprawna Opdowiedź" />
             <RadzenGridColumn TItem="Quiz.Shared.ViewModels.QuestionView" Context="question" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                 <Template Context="question">
                     <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(question))"

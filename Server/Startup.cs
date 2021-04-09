@@ -70,6 +70,7 @@ namespace Quiz.Server
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IGameService, GameService>();
 
 
             //services.AddIdentityServer()
@@ -78,7 +79,10 @@ namespace Quiz.Server
             //services.AddAuthentication()
             //    .AddIdentityServerJwt();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+
             services.AddRazorPages();
         }
 

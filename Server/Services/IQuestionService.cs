@@ -11,7 +11,7 @@ namespace Quiz.Server.Services
     public interface IQuestionService
     {
         Task<ResponseDto> AddAsync(QuestionVM questionVM);
-        Task<Question> GetAsync(Guid id);
+        Task<QuestionVM> GetAsync(Guid id);
         Task<ResponseDto> EditAsync(QuestionVM questionVM);
         Task<ResponseDto> DeleteAsync(Guid id);
         Task<List<QuestionView>> GetAsync();

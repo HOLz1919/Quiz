@@ -37,6 +37,24 @@
                     <ValidationMessage For="@(() => QuestionVM.Content)" />
                 </div>
             </div>
+            @foreach (var item in QuestionVM.Answers)
+            {
+        <div id="answerContainer">
+            <div class="row my-2 mx-2" >
+                <div class="col-25">
+                    <label for="QuestionVM.Answers[].Content">Odpowiedź </label>
+                </div>
+                <div class="col-75 row">
+                    <InputCheckbox name="QuestionVM.Answers[].IsCorrect" id="QuestionVM.Answers[].IsCorrect" class="form-control col-1" @bind-Value="@item.IsCorrect"></InputCheckbox>
+                    <InputText name="QuestionVM.Answers[].Content" id="QuestionVM.Answers[].Content" class="form-control col-8" @bind-Value="@item.Content"></InputText>
+                    <ValidationMessage For="@(() => item.Content)" />
+                </div>
+            </div>
+        </div>
+            }
+            <div class="d-flex justify-content-center flex-row my-2">
+                <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj odpowiedź" Click="@AddAnswer" />
+            </div>
             <div class="d-flex justify-content-center flex-row my-2">
                 <input type="submit" class="btn btn-primary" value="Zapisz">
             </div>

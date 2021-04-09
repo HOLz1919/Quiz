@@ -76,6 +76,7 @@ namespace Quiz.Server.Services
             try
             {
                 Question toEdit = _db.Questions.FirstOrDefault(item => item.Id == questionVM.Id);
+                toEdit.Answers = _db.Answers.Where(item => item.QuestionId == toEdit.Id).ToList();
                 if (toEdit != null)
                 {
                     toEdit.Content = questionVM.Content;
@@ -113,10 +114,19 @@ namespace Quiz.Server.Services
            
         }
 
-        public async Task<Question> GetAsync(Guid id)
+        public async Task<QuestionVM> GetAsync(Guid id)
         {
-            var questions = await _db.Questions.SingleAsync(item => item.Id == id);
-            return questions != null ? questions : null;
+            var Question = await _db.Questions.SingleAsync(item => item.Id == id);
+            List<Answer> answers = await _db.Answers.Where(item => item.QuestionId == Question.Id).ToListAsync();
+            answers.ForEach(item => item.Question = null);
+            QuestionVM QuestionVM = new QuestionVM()
+            {
+                Id = Question.Id,
+                CategoryId = Question.CategoryId,
+                Content = Question.Content,
+                Answers = answers
+            };
+            return QuestionVM != null ? QuestionVM : null;
         }
 
 
