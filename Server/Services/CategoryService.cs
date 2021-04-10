@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quiz.Server.Data;
+using Quiz.Server.Models;
 using Quiz.Shared;
 using Quiz.Shared.Responses;
 using System;

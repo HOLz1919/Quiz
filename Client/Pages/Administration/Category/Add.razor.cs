@@ -9,7 +9,7 @@ namespace Quiz.Client.Pages.Administration.Category
 {
     public partial class Add
     {
-        private Quiz.Shared.Category Category = new Quiz.Shared.Category();
+        private Quiz.Shared.CategoryDto Category = new Quiz.Shared.CategoryDto();
 
         [Inject]
         public ICategoryService CategoryService { get; set; }

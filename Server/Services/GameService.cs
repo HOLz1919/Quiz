@@ -8,7 +8,7 @@ namespace Quiz.Server.Services
 {
     public class GameService : IGameService
     {
-        public async Task<Match> GetAsync()
+        public async Task<MatchDto> GetAsync()
         {
             throw new NotImplementedException();
         }

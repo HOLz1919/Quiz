@@ -1,4 +1,5 @@
-﻿using Quiz.Shared;
+﻿using Quiz.Server.Models;
+using Quiz.Shared;
 using Quiz.Shared.Responses;
 using System;
 using System.Collections.Generic;

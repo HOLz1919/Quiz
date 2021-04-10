@@ -15,18 +15,18 @@
         <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
 
 
-        <RadzenGrid @ref="categoriesGrid" Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.Category" PageSize="50" ColumnWidth="400px">
+        <RadzenGrid @ref="categoriesGrid" Count="@count" Data="@categories" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.CategoryDto" PageSize="50" ColumnWidth="400px">
             <Columns>
-                <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Id" Title="CategoryId" Visible="false" />
-                <RadzenGridColumn TItem="Quiz.Shared.Category" Property="Name" Title="Nazwa" />
-                <RadzenGridColumn TItem="Quiz.Shared.Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <RadzenGridColumn TItem="Quiz.Shared.CategoryDto" Property="Id" Title="CategoryId" Visible="false" />
+                <RadzenGridColumn TItem="Quiz.Shared.CategoryDto" Property="Name" Title="Nazwa" />
+                <RadzenGridColumn TItem="Quiz.Shared.CategoryDto" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                     <Template Context="category">
                         <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(category))"
                                       MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))">
                         </RadzenButton>
                     </Template>
                 </RadzenGridColumn>
-                <RadzenGridColumn TItem="Quiz.Shared.Category" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <RadzenGridColumn TItem="Quiz.Shared.CategoryDto" Context="category" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                     <Template Context="category">
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"
                                       Click=@(args => ShowInlineDialog(category.Id,category.Name))

@@ -24,8 +24,8 @@ namespace Quiz.Client.Pages.Administration.Category
 
 
         int count;
-        IEnumerable<Quiz.Shared.Category> categories;
-        RadzenGrid<Quiz.Shared.Category> categoriesGrid;
+        IEnumerable<Quiz.Shared.CategoryDto> categories;
+        RadzenGrid<Quiz.Shared.CategoryDto> categoriesGrid;
 
 
         async Task LoadData(LoadDataArgs args)
@@ -49,7 +49,7 @@ namespace Quiz.Client.Pages.Administration.Category
             await InvokeAsync(StateHasChanged);
         }
 
-        async Task Edit(Quiz.Shared.Category category)
+        async Task Edit(Quiz.Shared.CategoryDto category)
         {
             await Task.Run(() => NavigationManager.NavigateTo("/administration/categories/edit/" + category.Id));
         }

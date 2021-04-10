@@ -11,7 +11,7 @@ namespace Quiz.Client.Pages.Administration.Category
     {
         [Parameter]
         public Guid CategoryId { get; set; }
-        public Quiz.Shared.Category Category = new Quiz.Shared.Category();
+        public Quiz.Shared.CategoryDto Category = new Quiz.Shared.CategoryDto();
         [Inject]
         public ICategoryService CategoryService { get; set; }
         [Inject]

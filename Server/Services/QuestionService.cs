@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quiz.Server.Data;
+using Quiz.Server.Models;
 using Quiz.Shared;
 using Quiz.Shared.Responses;
 using Quiz.Shared.ViewModels;
@@ -29,7 +30,7 @@ namespace Quiz.Server.Services
                 question.Id = Guid.NewGuid();
                 question.Content = questionVM.Content;
                 question.CategoryId = questionVM.CategoryId;
-                question.Answers = questionVM.Answers;
+                question.Answers = GetAnswersFromAnswersDtos(questionVM.Answers);
 
                 await _db.Questions.AddAsync(question);
                 await _db.SaveChangesAsync();
@@ -82,7 +83,7 @@ namespace Quiz.Server.Services
                     toEdit.Content = questionVM.Content;
                     toEdit.CategoryId = questionVM.CategoryId;
                     _db.Answers.RemoveRange(toEdit.Answers);
-                    toEdit.Answers = questionVM.Answers;
+                    toEdit.Answers = GetAnswersFromAnswersDtos(questionVM.Answers);
                     await _db.SaveChangesAsync();
                     responseDto.IsSuccessful = true;
                 }
@@ -124,10 +125,33 @@ namespace Quiz.Server.Services
                 Id = Question.Id,
                 CategoryId = Question.CategoryId,
                 Content = Question.Content,
-                Answers = answers
+                Answers = GetAnswerDtosFromAnswers(answers)
             };
             return QuestionVM != null ? QuestionVM : null;
         }
+
+
+
+        private static List<AnswerDto> GetAnswerDtosFromAnswers(List<Answer> answers)
+        {
+            List<AnswerDto> answerDtos = new List<AnswerDto>();
+            foreach(var item in answers)
+            {
+                answerDtos.Add(new AnswerDto() { Id = item.Id, Content = item.Content, IsCorrect = item.IsCorrect, QuestionId = item.QuestionId });
+            }
+            return answerDtos;
+        }
+
+        private static List<Answer> GetAnswersFromAnswersDtos(List<AnswerDto> answersDtos)
+        {
+            List<Answer> answers = new List<Answer>();
+            foreach (var item in answersDtos)
+            {
+                answers.Add(new Answer() { Id = item.Id, Content = item.Content, IsCorrect = item.IsCorrect, QuestionId = item.QuestionId });
+            }
+            return answers;
+        }
+
 
 
     }

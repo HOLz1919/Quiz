@@ -9,11 +9,11 @@ namespace Quiz.Client.Services
 {
     public interface ICategoryService
     {
-        Task<ResponseDto> Add(Category category);
-        Task<Category> Get(Guid id);
-        Task<ResponseDto> Edit(Category category);
+        Task<ResponseDto> Add(CategoryDto category);
+        Task<CategoryDto> Get(Guid id);
+        Task<ResponseDto> Edit(CategoryDto category);
         Task<ResponseDto> Delete(Guid id);
-        Task<List<Category>> Get();
+        Task<List<CategoryDto>> Get();
 
     }
 }

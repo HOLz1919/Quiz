@@ -25,7 +25,7 @@ namespace Quiz.Client.Services
 
 
 
-        public async Task<ResponseDto> Add(Category category)
+        public async Task<ResponseDto> Add(CategoryDto category)
         {
             var content = JsonSerializer.Serialize(category);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -52,7 +52,7 @@ namespace Quiz.Client.Services
 
         }
 
-        public async Task<ResponseDto> Edit(Category category)
+        public async Task<ResponseDto> Edit(CategoryDto category)
         {
             var content = JsonSerializer.Serialize(category);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -66,21 +66,21 @@ namespace Quiz.Client.Services
             return new ResponseDto { IsSuccessful = true };
         }
 
-        public async Task<Category> Get(Guid id)
+        public async Task<CategoryDto> Get(Guid id)
         {
             var response = await _client.GetAsync("api/category/" + id);
             var responseContent = await response.Content.ReadAsStringAsync();
          
-            var result = JsonSerializer.Deserialize<Category>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<CategoryDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
 
-        public async Task<List<Category>> Get()
+        public async Task<List<CategoryDto>> Get()
         {
             var response = await _client.GetAsync("api/category");
             var responseContent = await response.Content.ReadAsStringAsync();
 
-            var result = JsonSerializer.Deserialize<List<Category>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var result = JsonSerializer.Deserialize<List<CategoryDto>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
     }

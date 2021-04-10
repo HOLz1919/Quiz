@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quiz.Server.Data;
+using Quiz.Server.Models;
 using Quiz.Server.Services;
 using Quiz.Shared;
 using System;

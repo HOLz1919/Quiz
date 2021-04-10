@@ -8,7 +8,7 @@ namespace Quiz.Server.Services
 {
     public interface IGameService
     {
-        Task<Match> GetAsync();
+        Task<MatchDto> GetAsync();
 
     }
 }

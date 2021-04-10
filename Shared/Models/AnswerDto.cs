@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Quiz.Shared
 {
-    public class Answer
+    public class AnswerDto
     {
 
         [Key]
@@ -14,8 +14,6 @@ namespace Quiz.Shared
         public Guid QuestionId { get; set; }
         public bool IsCorrect { get; set; }
 
-
-        public virtual Question Question { get; set; }
 
     }
 }

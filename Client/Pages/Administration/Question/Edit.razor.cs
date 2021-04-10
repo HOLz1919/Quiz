@@ -12,8 +12,8 @@ namespace Quiz.Client.Pages.Administration.Question
     {
         [Parameter]
         public Guid QuestionId { get; set; }
-        public QuestionVM Question = new QuestionVM() { Answers = new List<Quiz.Shared.Answer>() };
-        private List<Quiz.Shared.Category> categories = new List<Quiz.Shared.Category>();
+        public QuestionVM Question = new QuestionVM() { Answers = new List<Quiz.Shared.AnswerDto>() };
+        private List<Quiz.Shared.CategoryDto> categories = new List<Quiz.Shared.CategoryDto>();
         [Inject]
         public ICategoryService CategoryService { get; set; }
         [Inject]
@@ -60,7 +60,7 @@ namespace Quiz.Client.Pages.Administration.Question
 
         private void AddAnswer()
         {
-            Question.Answers.Add(new Quiz.Shared.Answer() { Content = null });
+            Question.Answers.Add(new Quiz.Shared.AnswerDto() { Content = null });
         }
 
 
