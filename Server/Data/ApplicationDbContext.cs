@@ -23,6 +23,8 @@ namespace Quiz.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<QuestionView>(e => e.ToView("QuestionView").HasNoKey());
+            builder.Entity<UserMatchView>(e => e.ToView("UserMatchView").HasNoKey());
+            builder.Entity<MatchView>(e => e.ToView("MatchView").HasNoKey());
             builder.Entity<UserMatch>().HasKey(um => new { um.MatchId, um.ApplicationUserId });
             builder.Entity<UserMatch>()
                 .HasOne(bc => bc.ApplicationUser)
@@ -44,6 +46,8 @@ namespace Quiz.Server.Data
         #region Views
 
         public DbSet<QuestionView> QuestionViews { get; set; }
+        public DbSet<UserMatchView> UserMatchViews { get; set; }
+        public DbSet<MatchView> MatchViews { get; set; }
 
 
         #endregion

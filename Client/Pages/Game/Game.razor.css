@@ -1,8 +1,21 @@
 ﻿.game-container {
     background-color: #fff;
     margin: auto;
-    width: 90%;
+    width: 95%;
     border: 2px solid #052867;
     border-radius: 25px;
-    min-height: 80vh;
+    min-height: 100vh;
+}
+
+.tables-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-right: 1rem;
+    margin-left: 1rem;
+}
+
+
+.tableItem {
+    margin: 1rem;
 }

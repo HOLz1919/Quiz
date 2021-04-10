@@ -40,7 +40,7 @@ namespace Quiz.Client.Pages.Game
         }
 
 
-    protected override async Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             var result = await CategoryService.Get();
             categories = result;

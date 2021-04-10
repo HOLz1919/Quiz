@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Quiz.Server.Data;
 using Quiz.Server.Models;
 using Quiz.Shared;
 using Quiz.Shared.Dictionaries;
 using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +16,10 @@ namespace Quiz.Server.Services
     public class GameService : IGameService
     {
 
-
-
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _db;
 
-        public GameService(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
+        public GameService(ApplicationDbContext db)
         {
-            _userManager = userManager;
             _db = db;
         }
 
@@ -55,9 +53,17 @@ namespace Quiz.Server.Services
             return responseDto;
         }
 
-        public async Task<MatchDto> GetAsync()
+        public async Task<List<MatchView>> GetAsync()
         {
-            throw new NotImplementedException();
+            List<MatchView> matches = new List<MatchView>();
+            matches = await _db.MatchViews.Where(item => item.Status == (int)MatchStatus.WAITING).ToListAsync();
+            foreach(var item in matches)
+            {
+                item.Players = await _db.UserMatchViews.Where(x => x.MatchId == item.Id).ToListAsync();
+                item.CountOfPlayers = item.Players.Count();
+            }
+            return matches;
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Quiz.Shared;
 using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Quiz.Client.Services
     public interface IGameService
     {
         Task<MatchResponseDto> Add(MatchDto match);
+        Task<List<MatchView>> Get();
     }
 }

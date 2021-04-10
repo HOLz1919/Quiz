@@ -1,5 +1,6 @@
 ﻿using Quiz.Shared;
 using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,16 @@ namespace Quiz.Client.Services
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<MatchResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
-
         }
+
+        public async Task<List<MatchView>> Get()
+        {
+            var response = await _client.GetAsync("api/game");
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<List<MatchView>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
     }
 }
