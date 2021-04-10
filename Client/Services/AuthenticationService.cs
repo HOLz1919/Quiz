@@ -56,6 +56,7 @@ namespace Quiz.Client.Services
 
             await _localStorage.SetItemAsync("authToken", result.Token);
             await _localStorage.SetItemAsync("refreshToken", result.RefreshToken);
+            await _localStorage.SetItemAsync("UserId", result.UserId);
 
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
@@ -65,6 +66,7 @@ namespace Quiz.Client.Services
         {
             await _localStorage.RemoveItemAsync("authToken");
             await _localStorage.RemoveItemAsync("refreshToken");
+            await _localStorage.RemoveItemAsync("UserId");
 
             ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
             _client.DefaultRequestHeaders.Authorization = null;

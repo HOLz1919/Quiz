@@ -1,0 +1,8 @@
+﻿.game-container {
+    background-color: #fff;
+    margin: auto;
+    width: 90%;
+    border: 2px solid #052867;
+    border-radius: 25px;
+    min-height: 80vh;
+}

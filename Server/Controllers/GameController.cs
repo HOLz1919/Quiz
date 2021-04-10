@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quiz.Server.Data;
+using Quiz.Server.Models;
 using Quiz.Server.Services;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,60 @@ namespace Quiz.Server.Controllers
             var result = await _matchService.GetAsync();
             return Ok(result);
         }
+
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> Get(Guid id)
+        //{
+        //    var question = await _questionService.GetAsync(id);
+        //    if (question == null)
+        //        return NotFound(new { ErrorMessage = "Not found question with that id" });
+        //    return Ok(question);
+        //}
+
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add([FromBody] Match match)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { ErrorMessage = "Model is not Valid" });
+            }
+
+            var result = await _matchService.AddAsync(match);
+
+            if (!result.IsSuccessful)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+
+        //[HttpDelete("Delete/{id}")]
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+
+        //    var result = await _questionService.DeleteAsync(id);
+        //    if (!result.IsSuccessful)
+        //        return BadRequest(result);
+
+        //    return Ok(result);
+        //}
+
+        //[HttpPut("Edit")]
+        //public async Task<IActionResult> Edit([FromBody] QuestionVM questionVM)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(new { ErrorMessage = "Model is not Valid" });
+        //    }
+
+        //    var result = await _questionService.EditAsync(questionVM);
+
+        //    if (!result.IsSuccessful)
+        //        return BadRequest(result);
+
+        //    return Ok(result);
+        //}
+
 
 
 

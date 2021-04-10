@@ -23,6 +23,15 @@ namespace Quiz.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<QuestionView>(e => e.ToView("QuestionView").HasNoKey());
+            builder.Entity<UserMatch>().HasKey(um => new { um.MatchId, um.ApplicationUserId });
+            builder.Entity<UserMatch>()
+                .HasOne(bc => bc.ApplicationUser)
+                .WithMany(b => b.UserMatches)
+                . HasForeignKey(bc => bc.ApplicationUserId);
+            builder.Entity<UserMatch>()
+                .HasOne(bc => bc.Match)
+                .WithMany(c => c.UserMatches)
+                .HasForeignKey(bc => bc.MatchId);
             base.OnModelCreating(builder);
         }
 
@@ -30,7 +39,7 @@ namespace Quiz.Server.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Match> Matches { get; set; }
-
+        public DbSet<UserMatch> UserMatches { get; set; }
 
         #region Views
 

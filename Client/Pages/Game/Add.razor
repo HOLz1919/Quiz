@@ -1,0 +1,60 @@
+﻿@page "/game/add"
+
+@if (ShowError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+<div class="add-container">
+    <div class="my-4">
+        <EditForm Model="@Match" OnValidSubmit="OnSubmit">
+            <DataAnnotationsValidator />
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="CategoryId">Kategoria</label>
+                </div>
+                <div class="col-75">
+                    <InputSelect name="CategoryId" id="CategoryId" class="form-control" @bind-Value="Match.CategoryId">
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => Match.CategoryId)" />
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="MaxCountOfPlayers">Liczba graczy</label>
+                </div>
+                <div class="col-75">
+                    <InputSelect name="MaxCountOfPlayers" id="MaxCountOfPlayers" class="form-control" @bind-Value="Match.MaxCountOfPlayers">
+                        @for (int i = 1; i <= 10; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => Match.MaxCountOfPlayers)" />
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="MaxCountOfPlayers">Stawka</label>
+                </div>
+                <div class="col-75">
+                    <input type="number" name="Bid" class="form-control" @bind="Match.Bid" id="Bid" />
+                    <ValidationMessage For="@(() => Match.Bid)" />
+                </div>
+            </div>
+            <div class="d-flex justify-content-center flex-row my-2">
+                <input type="submit" class="btn btn-primary" value="Zapisz">
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+
+}

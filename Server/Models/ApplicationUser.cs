@@ -19,5 +19,7 @@ namespace Quiz.Server.Models
         public string RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
+        public virtual ICollection<UserMatch> UserMatches { get; set; }
+
     }
 }

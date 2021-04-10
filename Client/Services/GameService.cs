@@ -1,0 +1,34 @@
+﻿using Quiz.Shared;
+using Quiz.Shared.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace Quiz.Client.Services
+{
+    public class GameService : IGameService
+    {
+
+        private readonly HttpClient _client;
+
+        public GameService(HttpClient client)
+        {
+            _client = client;
+        }
+
+        public async Task<MatchResponseDto> Add(MatchDto match)
+        {
+            var content = JsonSerializer.Serialize(match);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/game/add", bodyContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<MatchResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+
+        }
+    }
+}

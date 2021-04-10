@@ -24,14 +24,16 @@ namespace Quiz.Server.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IConfigurationSection _jwtSettings;
         private readonly ITokenService _tokenService;
 
-        public AuthenticationController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService)
+        public AuthenticationController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
             _userManager = userManager;
+            _roleManager = roleManager;
             _configuration = configuration;
             _jwtSettings = _configuration.GetSection("JwtSettings");
             _tokenService = tokenService;
@@ -44,7 +46,8 @@ namespace Quiz.Server.Controllers
             if (registrationModel == null || !ModelState.IsValid)
                 return BadRequest();
 
-            var user = new ApplicationUser { UserName = registrationModel.Username, Email = registrationModel.Email };
+
+            var user = new ApplicationUser { UserName = registrationModel.Username, Email = registrationModel.Email, Money=1000 };
 
             var result = await _userManager.CreateAsync(user, registrationModel.Password);
 
@@ -54,7 +57,7 @@ namespace Quiz.Server.Controllers
                 return BadRequest(new RegistrationResponseDto { Errors = errors });
             }
 
-            await _userManager.AddToRoleAsync(user, "Admin");
+            await _userManager.AddToRoleAsync(user, "User");
 
             return StatusCode(201);
 
@@ -80,7 +83,7 @@ namespace Quiz.Server.Controllers
             await _userManager.UpdateAsync(user);
 
 
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken });
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken, UserId=user.Id });
         }
 
 

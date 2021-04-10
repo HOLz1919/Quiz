@@ -10,7 +10,8 @@ namespace Quiz.Shared.Dictionaries
     {
         WAITING = 1, // oczekujący
         ACTIVE = 2,  // w trakcie rozgrywki
-        ENDED =3  // Zakończony
+        ENDED =3,  // Zakończony
+        CANCELED =4 // Anulowany 
 
     }
 }
