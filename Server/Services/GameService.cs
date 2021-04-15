@@ -55,15 +55,84 @@ namespace Quiz.Server.Services
 
         public async Task<List<MatchView>> GetAsync()
         {
-            List<MatchView> matches = new List<MatchView>();
-            matches = await _db.MatchViews.Where(item => item.Status == (int)MatchStatus.WAITING).ToListAsync();
-            foreach(var item in matches)
+            try
             {
-                item.Players = await _db.UserMatchViews.Where(x => x.MatchId == item.Id).ToListAsync();
-                item.CountOfPlayers = item.Players.Count();
+                List<MatchView> matches = new List<MatchView>();
+                List<Task> tasks = new List<Task>();
+                matches = await _db.MatchViews.Where(item => item.Status == (int)MatchStatus.WAITING).ToListAsync();
+                foreach (var item in matches)
+                {
+                    tasks.Add(ProcessMatchView(item));
+                }
+
+                var result = Task.WhenAll(tasks);
+                return matches;
+            }catch(Exception ex)
+            {
+                Console.Write(ex);
+                return null;
             }
-            return matches;
+    
+        }
+
+        public async Task<MatchView> GetAsync(Guid matchId)
+        {
+            try
+            {
+              var match= await _db.MatchViews.SingleAsync(item => item.Id == matchId);
+                if (match != null)
+                {
+                    match.Players= await _db.UserMatchViews.Where(x => x.MatchId == matchId).ToListAsync();
+                }
+
+                return match;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                return null;
+            }
 
         }
+
+
+        public async Task<ResponseDto> JoinAsync(Guid matchId, string userId)
+        {
+            ResponseDto responseDto = new ResponseDto();
+            try
+            {
+                var result = await _db.Matches.SingleAsync(item => item.Id == matchId);
+                if(_db.UserMatches.Where(item => item.MatchId == matchId).Count() < result.MaxCountOfPlayers)
+                {
+                    UserMatch userMatch = new UserMatch();
+                    userMatch.Points = 0;
+                    userMatch.MatchId = matchId;
+                    userMatch.ApplicationUserId = userId;
+                    await _db.UserMatches.AddAsync(userMatch);
+                    await _db.SaveChangesAsync();
+                    responseDto.IsSuccessful = true;
+                }
+                else
+                {
+                    responseDto.IsSuccessful = false;
+                    responseDto.ErrorMessage = "You cannot join the game because the player limit has been reached";
+                }
+              
+            }catch(Exception ex)
+            {
+                responseDto.IsSuccessful = false;
+                responseDto.ErrorMessage = ex.Message;
+            }
+            return responseDto;
+        }
+
+        private Task ProcessMatchView(MatchView matchView)
+        {
+            matchView.Players=  _db.UserMatchViews.Where(x => x.MatchId == matchView.Id).ToList();
+
+            return Task.CompletedTask;
+            
+        }
+
     }
 }

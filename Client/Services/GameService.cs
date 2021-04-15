@@ -1,4 +1,5 @@
 ﻿using Quiz.Shared;
+using Quiz.Shared.Models;
 using Quiz.Shared.Responses;
 using Quiz.Shared.ViewModels;
 using System;
@@ -40,5 +41,24 @@ namespace Quiz.Client.Services
             return result;
         }
 
+        public async Task<MatchView> Get(Guid matchId)
+        {
+            var response = await _client.GetAsync("api/game/"+matchId);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<MatchView>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
+        public async Task<ResponseDto> Join(Guid matchId, string userId)
+        {
+            UserMatchDto userMatch = new UserMatchDto() { matchId = matchId, userId = userId };
+            var content = JsonSerializer.Serialize(userMatch);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/game/join", bodyContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<ResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
     }
 }

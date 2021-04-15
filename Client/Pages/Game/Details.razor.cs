@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace Quiz.Client.Pages.Game
 {
-    public partial class Game
+    public partial class Details
     {
-
-        private List<MatchView> Matches = new List<MatchView>();
+        public MatchView Match = new MatchView() { Players = new List<UserMatchView>()};
+        [Parameter]
+        public Guid MatchId { get; set; }
         private string UserId { get; set; }
         [Inject]
         public IGameService GameService { get; set; }
@@ -25,39 +26,26 @@ namespace Quiz.Client.Pages.Game
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
-
-
-        void Add()
-        {
-            NavigationManager.NavigateTo("/game/add");
-        }
+        private bool HideElement { get; set; } = true;
 
         protected override async Task OnInitializedAsync()
         {
-            var result = await GameService.Get();
-            Matches = result;
-
-            UserId = await _localStorage.GetItemAsync<string>("UserId");        
+            var result = await GameService.Get(MatchId);
+            Match = result;
+            UserId = await _localStorage.GetItemAsync<string>("UserId");
+            HideElement = IsPossibleToStartMatch();
             await base.OnInitializedAsync();
         }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        private bool IsPossibleToStartMatch()
         {
-            IsUserInGame();
-            return base.OnAfterRenderAsync(firstRender);
+            if (Guid.Parse(UserId) == Match.OwnerId && Match.CountOfPlayers>=2)
+            {
+                return false;
+            }
+            return true;
         }
 
-        private void IsUserInGame()
-        {
-            foreach(var Match in Matches)
-            {
-                if(Match.Players.Any(item => item.ApplicationUserId == UserId))
-                {
-                    NavigationManager.NavigateTo("/game/details/" + Match.Id);
-                    break;
-                }
-            }
-        }
 
     }
 }

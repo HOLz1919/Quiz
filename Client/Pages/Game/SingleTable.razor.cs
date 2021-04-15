@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Quiz.Client.Services;
 using Quiz.Shared.ViewModels;
 using Radzen;
+using Radzen.Blazor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Quiz.Client.Pages.Game
 {
-    public partial class Game
+    public partial class SingleTable
     {
-
-        private List<MatchView> Matches = new List<MatchView>();
+        [Parameter]
+        public MatchView Match { get; set; }
         private string UserId { get; set; }
         [Inject]
         public IGameService GameService { get; set; }
@@ -26,38 +27,31 @@ namespace Quiz.Client.Pages.Game
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
 
-
-        void Add()
-        {
-            NavigationManager.NavigateTo("/game/add");
-        }
+        RadzenButton joinButton;
 
         protected override async Task OnInitializedAsync()
         {
-            var result = await GameService.Get();
-            Matches = result;
-
-            UserId = await _localStorage.GetItemAsync<string>("UserId");        
-            await base.OnInitializedAsync();
+           UserId = await _localStorage.GetItemAsync<string>("UserId");
+           await base.OnInitializedAsync();
         }
 
-        protected override Task OnAfterRenderAsync(bool firstRender)
+        protected override void OnAfterRender(bool firstRender)
         {
-            IsUserInGame();
-            return base.OnAfterRenderAsync(firstRender);
-        }
-
-        private void IsUserInGame()
-        {
-            foreach(var Match in Matches)
+            if (Match.CountOfPlayers >= Match.MaxCountOfPlayers)
             {
-                if(Match.Players.Any(item => item.ApplicationUserId == UserId))
-                {
-                    NavigationManager.NavigateTo("/game/details/" + Match.Id);
-                    break;
-                }
+                joinButton.Disabled = true;
             }
+            base.OnAfterRender(firstRender);
         }
 
+        public async Task Join()
+        {
+            var result = await GameService.Join(Match.Id, UserId);
+            if (result.IsSuccessful)
+            {
+                NavigationManager.NavigateTo("/game/details/" + Match.Id);
+            }
+    
+        }
     }
 }

@@ -12,7 +12,9 @@ namespace Quiz.Server.Services
     public interface IGameService
     {
         Task<List<MatchView>> GetAsync();
+        Task<MatchView> GetAsync(Guid matchId);
         Task<MatchResponseDto> AddAsync(Match match);
+        Task<ResponseDto> JoinAsync(Guid matchId, string userId);
 
     }
 }

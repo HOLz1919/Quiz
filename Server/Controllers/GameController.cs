@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Quiz.Server.Data;
 using Quiz.Server.Models;
 using Quiz.Server.Services;
+using Quiz.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,29 +18,43 @@ namespace Quiz.Server.Controllers
     public class GameController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        private readonly IGameService _matchService;
+        private readonly IGameService _gameService;
 
         public GameController(ApplicationDbContext db, IGameService matchService)
         {
             _db = db;
-            _matchService = matchService;
+            _gameService = matchService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var result = await _matchService.GetAsync();
+            var result = await _gameService.GetAsync();
             return Ok(result);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> Get(Guid id)
-        //{
-        //    var question = await _questionService.GetAsync(id);
-        //    if (question == null)
-        //        return NotFound(new { ErrorMessage = "Not found question with that id" });
-        //    return Ok(question);
-        //}
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var match = await _gameService.GetAsync(id);
+            if (match == null)
+                return NotFound(new { ErrorMessage = "Not found match with that id" });
+            return Ok(match);
+        }
+
+        [HttpPost("Join")]
+        public async Task<IActionResult> Join([FromBody] UserMatchDto userMatch)
+        {
+            var result = await _gameService.JoinAsync(userMatch.matchId, userMatch.userId);
+            if (!result.IsSuccessful)
+                return StatusCode(400, result);
+
+            return Ok(result);
+
+        }
+
+
 
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] Match match)
@@ -49,7 +64,7 @@ namespace Quiz.Server.Controllers
                 return BadRequest(new { ErrorMessage = "Model is not Valid" });
             }
 
-            var result = await _matchService.AddAsync(match);
+            var result = await _gameService.AddAsync(match);
 
             if (!result.IsSuccessful)
                 return BadRequest(result);

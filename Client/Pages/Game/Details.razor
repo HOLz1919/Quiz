@@ -1,0 +1,46 @@
+﻿@page "/game/details/{MatchId:guid}"
+
+
+
+<div class="details-container">
+    <div class="d-flex justify-content-around my-2">
+        <div style="width: 65%; height: 100%">
+            <div class="d-flex justify-content-between my-2 mx-1">
+                <b>@Match.CategoryName</b>
+                <div>
+                    <b>@Match.Bid</b>
+                    <span class="oi oi-dollar" aria-hidden="true"></span>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex flex-column">
+                <div class="d-flex justify-content-between my-2">
+                    <b>Liczba graczy: </b>
+                    <b>@Match.CountOfPlayers/@Match.MaxCountOfPlayers</b>
+                </div>
+                @foreach (var item in Match.Players)
+                {
+                    <div>
+                        <span class="oi oi-person"></span>  <b>@item.Username</b>
+                    </div>
+                }
+            </div>
+            <div hidden="@HideElement">
+                <RadzenButton Text="Rozpocznij"></RadzenButton>
+            </div>
+            
+        </div>
+        <div class="message-container d-flex align-items-end justify-content-center m-2">
+            <RadzenTextBox Placeholder="Wiadomość..."></RadzenTextBox>
+            <RadzenButton Text="Wyślij"></RadzenButton>
+         
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+
+}
