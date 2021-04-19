@@ -14,7 +14,7 @@ namespace Quiz.Server.Controllers.Administration
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin,SuperAdmin")]
+    [Authorize]
     public class CategoryController : ControllerBase
     {
         private readonly ApplicationDbContext _db;

@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Quiz.Client.Services;
 using Quiz.Shared.ViewModels;
 using Radzen;
@@ -25,6 +26,7 @@ namespace Quiz.Client.Pages.Game
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
+        public HubConnection Connection { get; set; }
 
 
         void Add()
@@ -37,7 +39,8 @@ namespace Quiz.Client.Pages.Game
             var result = await GameService.Get();
             Matches = result;
 
-            UserId = await _localStorage.GetItemAsync<string>("UserId");        
+            UserId = await _localStorage.GetItemAsync<string>("UserId");
+            await ConnectToServer();
             await base.OnInitializedAsync();
         }
 
@@ -45,6 +48,28 @@ namespace Quiz.Client.Pages.Game
         {
             IsUserInGame();
             return base.OnAfterRenderAsync(firstRender);
+        }
+
+        private async Task ConnectToServer()
+        {
+            Connection = new HubConnectionBuilder()
+                .WithUrl("https://localhost:44352/tablesHub")
+                .Build();
+
+            await Connection.StartAsync();
+
+            Connection.Closed += async (s) =>
+             {
+                 await Connection.StartAsync();
+             };
+
+
+            Connection.On<List<MatchView>>("MatchesUpdate", m =>
+            {
+                Matches = m;
+                StateHasChanged();
+            });
+
         }
 
         private void IsUserInGame()

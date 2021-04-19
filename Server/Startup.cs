@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Quiz.Server.Data;
+using Quiz.Server.Hubs;
 using Quiz.Server.Models;
 using Quiz.Server.Services;
 using System.Linq;
@@ -82,6 +83,8 @@ namespace Quiz.Server
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
              options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+            services.AddSignalR();
+
 
             services.AddRazorPages();
         }
@@ -117,6 +120,7 @@ namespace Quiz.Server
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<TablesHub>("/tablesHub");
             });
         }
     }

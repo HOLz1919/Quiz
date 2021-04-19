@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Quiz.Server.Data;
+using Quiz.Server.Hubs;
 using Quiz.Server.Models;
 using Quiz.Server.Services;
 using Quiz.Shared.Models;
@@ -19,11 +21,13 @@ namespace Quiz.Server.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IGameService _gameService;
+        private readonly IHubContext<TablesHub> _hubContext;
 
-        public GameController(ApplicationDbContext db, IGameService matchService)
+        public GameController(ApplicationDbContext db, IGameService matchService, IHubContext<TablesHub> hubContext)
         {
             _db = db;
             _gameService = matchService;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -50,6 +54,8 @@ namespace Quiz.Server.Controllers
             if (!result.IsSuccessful)
                 return StatusCode(400, result);
 
+            var matches = await _gameService.GetAsync();
+            await _hubContext.Clients.All.SendAsync("MatchesUpdate", matches);
             return Ok(result);
 
         }
@@ -68,6 +74,10 @@ namespace Quiz.Server.Controllers
 
             if (!result.IsSuccessful)
                 return BadRequest(result);
+
+
+            var matches = await _gameService.GetAsync();
+            await _hubContext.Clients.All.SendAsync("MatchesUpdate", matches);
 
             return Ok(result);
         }
