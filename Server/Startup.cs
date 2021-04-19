@@ -121,6 +121,7 @@ namespace Quiz.Server
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
                 endpoints.MapHub<TablesHub>("/tablesHub");
+                endpoints.MapHub<SingleTableHub>("/SingleTableHub");
             });
         }
     }

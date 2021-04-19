@@ -22,12 +22,14 @@ namespace Quiz.Server.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IGameService _gameService;
         private readonly IHubContext<TablesHub> _hubContext;
+        private readonly IHubContext<SingleTableHub> _hubContextSingleTable;
 
-        public GameController(ApplicationDbContext db, IGameService matchService, IHubContext<TablesHub> hubContext)
+        public GameController(ApplicationDbContext db, IGameService matchService, IHubContext<TablesHub> hubContext, IHubContext<SingleTableHub> hubContextSingleTable)
         {
             _db = db;
             _gameService = matchService;
             _hubContext = hubContext;
+            _hubContextSingleTable = hubContextSingleTable;
         }
 
         [HttpGet]
@@ -56,6 +58,11 @@ namespace Quiz.Server.Controllers
 
             var matches = await _gameService.GetAsync();
             await _hubContext.Clients.All.SendAsync("MatchesUpdate", matches);
+
+            var match = await _gameService.GetAsync(userMatch.matchId);
+            await _hubContextSingleTable.Clients.Group(userMatch.matchId.ToString()).SendAsync("UpdateMatch", match);
+    
+
             return Ok(result);
 
         }

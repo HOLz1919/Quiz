@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Quiz.Client.Services;
 using Quiz.Shared.ViewModels;
 using Radzen;
@@ -27,6 +28,9 @@ namespace Quiz.Client.Pages.Game
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
         private bool HideElement { get; set; } = true;
+        public HubConnection Connection { get; set; }
+
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -34,6 +38,7 @@ namespace Quiz.Client.Pages.Game
             Match = result;
             UserId = await _localStorage.GetItemAsync<string>("UserId");
             HideElement = IsPossibleToStartMatch();
+            await ConnectToServer();
             await base.OnInitializedAsync();
         }
 
@@ -44,6 +49,32 @@ namespace Quiz.Client.Pages.Game
                 return false;
             }
             return true;
+        }
+
+
+        private async Task ConnectToServer()
+        {
+            Connection = new HubConnectionBuilder()
+                .WithUrl("https://localhost:44352/SingleTableHub")
+                .Build();
+
+            await Connection.StartAsync();
+
+            Connection.Closed += async (s) =>
+            {
+                await Connection.StartAsync();
+            };
+
+            await Connection.InvokeAsync("JoinGroup", Match.Id);
+
+
+            Connection.On<MatchView>("UpdateMatch", m =>
+            {
+                Match = m;
+                IsPossibleToStartMatch();
+                StateHasChanged();
+            });
+
         }
 
 

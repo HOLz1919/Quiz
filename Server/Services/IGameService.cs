@@ -15,6 +15,5 @@ namespace Quiz.Server.Services
         Task<MatchView> GetAsync(Guid matchId);
         Task<MatchResponseDto> AddAsync(Match match);
         Task<ResponseDto> JoinAsync(Guid matchId, string userId);
-
     }
 }
