@@ -22,6 +22,11 @@ namespace Quiz.Server.Hubs
             return Groups.AddToGroupAsync(Context.ConnectionId, group);
         }
 
+        public async Task StartMatch(string group)
+        {
+            await Clients.Group(group).SendAsync("StartMatch", "Mecz za chwilę się rozpocznie");
+        }
+
 
      
     }

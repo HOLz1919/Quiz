@@ -51,6 +51,11 @@ namespace Quiz.Client.Pages.Game
             return true;
         }
 
+        private async Task StartMatch()
+        {
+            await Connection.InvokeAsync("StartMatch", Match.Id);
+        }
+
 
         private async Task ConnectToServer()
         {
@@ -71,7 +76,12 @@ namespace Quiz.Client.Pages.Game
             Connection.On<MatchView>("UpdateMatch", m =>
             {
                 Match = m;
-                IsPossibleToStartMatch();
+                HideElement=IsPossibleToStartMatch();
+                StateHasChanged();
+            });
+
+            Connection.On<string>("StartMatch", message =>
+            {
                 StateHasChanged();
             });
 
