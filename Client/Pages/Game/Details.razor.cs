@@ -28,7 +28,10 @@ namespace Quiz.Client.Pages.Game
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
         private bool HideElement { get; set; } = true;
+        private bool HideTimer { get; set; } = true;
+        private int Counter { get; set; } = 15;
         public HubConnection Connection { get; set; }
+        private static System.Timers.Timer aTimer { get; set; }
 
 
 
@@ -82,9 +85,32 @@ namespace Quiz.Client.Pages.Game
 
             Connection.On<string>("StartMatch", message =>
             {
+                HideTimer = false;
+                StartTimer();
                 StateHasChanged();
             });
 
+        }
+
+        public void StartTimer()
+        {
+            aTimer = new System.Timers.Timer(1000);
+            aTimer.Elapsed += CountDownTimer;
+            aTimer.Enabled = true;
+        }
+
+        public void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (Counter > 0)
+            {
+                Counter -= 1;
+            }
+            else
+            {
+                aTimer.Enabled = false;
+                NavigationManager.NavigateTo("/game/LiveGame/" + MatchId);
+            }
+            InvokeAsync(StateHasChanged);
         }
 
 

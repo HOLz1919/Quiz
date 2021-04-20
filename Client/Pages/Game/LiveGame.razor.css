@@ -1,0 +1,20 @@
+﻿.details-container {
+    background-color: #fff;
+    margin: auto;
+    width: 70%;
+    border: 2px solid #052867;
+    border-radius: 25px;
+    min-height: 70%;
+}
+
+@media screen and (max-width: 1140px) {
+    .details-container {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .details-container {
+        width: 90%;
+    }
+}
