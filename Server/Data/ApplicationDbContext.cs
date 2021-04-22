@@ -25,6 +25,7 @@ namespace Quiz.Server.Data
             builder.Entity<QuestionView>(e => e.ToView("QuestionView").HasNoKey());
             builder.Entity<UserMatchView>(e => e.ToView("UserMatchView").HasNoKey());
             builder.Entity<MatchView>(e => e.ToView("MatchView").HasNoKey());
+
             builder.Entity<UserMatch>().HasKey(um => new { um.MatchId, um.ApplicationUserId });
             builder.Entity<UserMatch>()
                 .HasOne(bc => bc.ApplicationUser)
@@ -34,6 +35,19 @@ namespace Quiz.Server.Data
                 .HasOne(bc => bc.Match)
                 .WithMany(c => c.UserMatches)
                 .HasForeignKey(bc => bc.MatchId);
+
+
+            builder.Entity<MatchQuestion>().HasKey(mq => new { mq.MatchId, mq.QuestionId });
+            builder.Entity<MatchQuestion>()
+                .HasOne(bc => bc.Question)
+                .WithMany(b => b.MatchQuestions)
+                .HasForeignKey(bc => bc.QuestionId);
+            builder.Entity<MatchQuestion>()
+                .HasOne(bc => bc.Match)
+                .WithMany(c => c.MatchQuestions)
+                .HasForeignKey(bc => bc.MatchId);
+
+
             base.OnModelCreating(builder);
         }
 
@@ -42,6 +56,7 @@ namespace Quiz.Server.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<UserMatch> UserMatches { get; set; }
+        public DbSet<MatchQuestion> MatchQuestions { get; set; }
 
         #region Views
 

@@ -40,7 +40,7 @@ namespace Quiz.Server.Services
                 };
                 await _db.UserMatches.AddAsync(userMatch);
                 await _db.SaveChangesAsync();
-
+                await GenerateQuestionsForMatch(match.Id, match.CategoryId);
 
                 responseDto.IsSuccessful = true;
                 responseDto.MatchId = match.Id;
@@ -133,6 +133,16 @@ namespace Quiz.Server.Services
             return Task.CompletedTask;
             
         }
+
+        private async Task GenerateQuestionsForMatch(Guid MatchId, Guid CategoryId)
+        {
+            List<MatchQuestion> Questions = await _db.Questions.Where(item => item.CategoryId == CategoryId).Select(item => new MatchQuestion() { MatchId = MatchId, QuestionId = item.Id })
+                .OrderBy(r => Guid.NewGuid()).Take(3).ToListAsync();
+
+            await _db.MatchQuestions.AddRangeAsync(Questions);
+            await _db.SaveChangesAsync();
+        }
+        
 
     }
 }

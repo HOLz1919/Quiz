@@ -24,6 +24,7 @@ namespace Quiz.Server.Models
 
         public virtual Category Category { get; set; }
         public virtual ICollection<UserMatch> UserMatches { get; set; }
+        public virtual ICollection<MatchQuestion> MatchQuestions { get; set; }
 
     }
 }
