@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Quiz.Client.Services;
+using Quiz.Shared.Dictionaries;
 using Quiz.Shared.ViewModels;
 using Radzen;
 using System;
@@ -40,9 +41,16 @@ namespace Quiz.Client.Pages.Game
             var result = await GameService.Get(MatchId);
             Match = result;
             UserId = await _localStorage.GetItemAsync<string>("UserId");
+           
             HideElement = IsPossibleToStartMatch();
             await ConnectToServer();
             await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            CheckMatchStatus();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private bool IsPossibleToStartMatch()
@@ -111,6 +119,22 @@ namespace Quiz.Client.Pages.Game
                 NavigationManager.NavigateTo("/game/LiveGame/" + MatchId);
             }
             InvokeAsync(StateHasChanged);
+        }
+
+
+
+        private void CheckMatchStatus()
+        {
+            if (Match.Status==(int)MatchStatus.ACTIVE)
+            {
+                NavigationManager.NavigateTo("/game/LiveGame/" + Match.Id);
+            }
+
+            if (Match.Status == (int)MatchStatus.ENDED)
+            {
+                NavigationManager.NavigateTo("/game/gameresults/" + Match.Id);
+            }
+
         }
 
 

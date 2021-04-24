@@ -126,6 +126,57 @@ namespace Quiz.Server.Services
             return responseDto;
         }
 
+        public async Task<List<MatchQuestionsView>> GetQuestions(Guid matchId)
+        {
+            try
+            {
+                _db.ChangeTracker.LazyLoadingEnabled = false;
+                var matchQuestions = await _db.MatchQuestionsView.Where(item => item.MatchId == matchId).ToListAsync();
+                List<Task> tasks = new List<Task>();
+                foreach (var item in matchQuestions)
+                {
+                    tasks.Add(ProcessQuestionAnswer(item));
+                }
+
+                var result = Task.WhenAll(tasks);
+
+                return matchQuestions;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                return null;
+            }
+        }
+
+        public async Task<List<UserMatchView>> GetResults(Guid MatchId)
+        {
+            try
+            {
+                var scores = await _db.UserMatchViews.Where(item => item.MatchId == MatchId).OrderByDescending(item => item.Points).ToListAsync();
+                return scores;
+
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                return null;
+            }
+
+
+        }
+
+
+        public async Task SetMatchStatus(Guid matchId, int status = 2)
+        {
+            var match = await _db.Matches.FirstOrDefaultAsync(item => item.Id == matchId);
+            if (match != null)
+            {
+                match.Status = status;
+                await _db.SaveChangesAsync();
+            }
+        }
+
         private Task ProcessMatchView(MatchView matchView)
         {
             matchView.Players=  _db.UserMatchViews.Where(x => x.MatchId == matchView.Id).ToList();
@@ -142,7 +193,17 @@ namespace Quiz.Server.Services
             await _db.MatchQuestions.AddRangeAsync(Questions);
             await _db.SaveChangesAsync();
         }
-        
+
+ 
+
+
+        private Task ProcessQuestionAnswer(MatchQuestionsView matchQuestionsView)
+        {
+            matchQuestionsView.Answers = _db.Answers.Where(x => x.QuestionId == matchQuestionsView.QuestionId).Select(item=> new AnswerVM() { AnswerId=item.Id, Content=item.Content }).OrderBy(item => Guid.NewGuid()).ToList();
+
+            return Task.CompletedTask;
+
+        }
 
     }
 }

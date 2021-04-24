@@ -90,6 +90,23 @@ namespace Quiz.Server.Controllers
         }
 
 
+        [HttpGet("GetQuestions/{id}")]
+        public async Task<IActionResult> GetQuestions(Guid id)
+        {
+            var questions = await _gameService.GetQuestions(id);
+            return Ok(questions);
+
+        }
+
+        [HttpGet("GetResults/{id}")]
+        public async Task<IActionResult> GetResults(Guid id)
+        {
+            var results = await _gameService.GetResults(id);
+            return Ok(results);
+
+        }
+
+
         //[HttpDelete("Delete/{id}")]
         //public async Task<IActionResult> Delete(Guid id)
         //{

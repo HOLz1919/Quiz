@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Quiz.Server.Services;
+using Quiz.Shared.Dictionaries;
 using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,14 @@ namespace Quiz.Server.Hubs
 
         public async Task StartMatch(string group)
         {
+            await _gameService.SetMatchStatus(Guid.Parse(group), (int)MatchStatus.ACTIVE);
             await Clients.Group(group).SendAsync("StartMatch", "Mecz za chwilę się rozpocznie");
+        }
+
+        public async Task UpdateResult(string group)
+        {
+            var reuslt = _gameService.GetResults(Guid.Parse(group));
+            await Clients.Group(group).SendAsync("UpdateResult", group);
         }
 
 
