@@ -40,13 +40,14 @@ namespace Quiz.Client.Pages.Game
             Matches = result;
 
             UserId = await _localStorage.GetItemAsync<string>("UserId");
+            IsUserInGame();
             await ConnectToServer();
             await base.OnInitializedAsync();
         }
 
         protected override Task OnAfterRenderAsync(bool firstRender)
         {
-            IsUserInGame();
+            
             return base.OnAfterRenderAsync(firstRender);
         }
 

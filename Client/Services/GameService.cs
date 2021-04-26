@@ -50,6 +50,15 @@ namespace Quiz.Client.Services
             return result;
         }
 
+        public async Task<List<MatchQuestionsView>> GetQuestions(Guid matchId)
+        {
+            var response = await _client.GetAsync("api/game/getquestions/" + matchId);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<List<MatchQuestionsView>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
         public async Task<ResponseDto> Join(Guid matchId, string userId)
         {
             UserMatchDto userMatch = new UserMatchDto() { matchId = matchId, userId = userId };

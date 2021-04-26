@@ -14,5 +14,6 @@ namespace Quiz.Client.Services
         Task<List<MatchView>> Get();
         Task<MatchView> Get(Guid matchId);
         Task<ResponseDto> Join(Guid matchId, string userId);
+        Task<List<MatchQuestionsView>> GetQuestions(Guid matchId);
     }
 }

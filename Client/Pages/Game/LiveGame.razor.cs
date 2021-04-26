@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Quiz.Client.Services;
+using Quiz.Shared.ViewModels;
 using Radzen;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace Quiz.Client.Pages.Game
     {
         [Parameter]
         public Guid MatchId { get; set; }
+        public List<MatchQuestionsView> MatchQuestions = new List<MatchQuestionsView>();
+        public MatchQuestionsView tempQuestion = new MatchQuestionsView() { Answers = new List<AnswerVM>() };
         private string UserId { get; set; }
         [Inject]
         public IGameService GameService { get; set; }
@@ -27,15 +30,26 @@ namespace Quiz.Client.Pages.Game
         public ILocalStorageService _localStorage { get; set; }
 
         public HubConnection Connection { get; set; }
+        private int PointsForQuestions { get; set; }
+        private int Counter { get; set; } = 1000;
+        private int BreakCounter { get; set; } = 5;
+        private static System.Timers.Timer aTimer { get; set; }
+        private static System.Timers.Timer BreakTimer { get; set; }
+        private int CountOfQuestions { get; set; }
+        private int ActualIteration { get; set; }
 
 
         protected override async Task OnInitializedAsync()
         {
 
             UserId = await _localStorage.GetItemAsync<string>("UserId");
+            MatchQuestions = await GameService.GetQuestions(MatchId);
+            CountOfQuestions = MatchQuestions.Count();
+            StartBreakTimer();
             await ConnectToServer();
             await  base.OnInitializedAsync();
         }
+
 
 
         private async Task ConnectToServer()
@@ -57,6 +71,53 @@ namespace Quiz.Client.Pages.Game
 
         }
 
+
+        public void StartTimer()
+        {
+            Counter = 1000;
+            aTimer = new System.Timers.Timer(100);
+            aTimer.Elapsed += CountDownTimer;
+            aTimer.Enabled = true;
+        }
+
+        public void CountDownTimer(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (Counter > 0)
+            {
+                Counter -= 10;
+            }
+            else
+            {
+                aTimer.Enabled = false;
+                ActualIteration++;
+                StartBreakTimer();
+            }
+            InvokeAsync(StateHasChanged);
+        }
+
+        public void StartBreakTimer()
+        {
+            BreakCounter = 5;
+            BreakTimer = new System.Timers.Timer(1000);
+            BreakTimer.Elapsed += CountDownBreakTimer;
+            if(ActualIteration>=CountOfQuestions) NavigationManager.NavigateTo("/game/gameresults/" + MatchId);
+            tempQuestion = MatchQuestions[ActualIteration];
+            BreakTimer.Enabled = true;
+        }
+
+        public void CountDownBreakTimer(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (BreakCounter > 0)
+            {
+                BreakCounter -= 1;
+            }
+            else
+            {
+                BreakTimer.Enabled = false;
+                StartTimer();
+            }
+            InvokeAsync(StateHasChanged);
+        }
 
 
     }

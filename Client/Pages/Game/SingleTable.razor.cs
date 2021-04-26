@@ -32,15 +32,16 @@ namespace Quiz.Client.Pages.Game
         protected override async Task OnInitializedAsync()
         {
            UserId = await _localStorage.GetItemAsync<string>("UserId");
-           await base.OnInitializedAsync();
-        }
-
-        protected override void OnAfterRender(bool firstRender)
-        {
             if (Match.CountOfPlayers >= Match.MaxCountOfPlayers)
             {
                 joinButton.Disabled = true;
             }
+            await base.OnInitializedAsync();
+        }
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+
             base.OnAfterRender(firstRender);
         }
 

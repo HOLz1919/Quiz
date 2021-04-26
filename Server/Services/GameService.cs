@@ -139,7 +139,7 @@ namespace Quiz.Server.Services
                 }
 
                 var result = Task.WhenAll(tasks);
-
+                _db.ChangeTracker.LazyLoadingEnabled = true;
                 return matchQuestions;
             }
             catch (Exception ex)
