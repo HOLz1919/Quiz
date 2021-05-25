@@ -7,8 +7,9 @@
     <RadzenGrid @ref="resultsGrid" Count="@count" Data="@results" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.ResultsView" PageSize="50" ColumnWidth="400px">
         <Columns>
             <RadzenGridColumn Width="100px" TItem="Quiz.Shared.ViewModels.ResultsView" Property="Place" Title="Miejsce" />
-            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ResultsView" Property="Username" Title="Użytkownik" />
-            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ResultsView" Property="WonMatches" Title="Ilość zwycięstw" />
+            <RadzenGridColumn  TItem="Quiz.Shared.ViewModels.ResultsView" Property="Username" Title="Użytkownik" />
+            <RadzenGridColumn Width="200px" TItem="Quiz.Shared.ViewModels.ResultsView" Property="WonMatches" Title="Ilość zwycięstw" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ResultsView" Property="CategoryName" Title="Kategoria" />
 
         </Columns>
     </RadzenGrid>

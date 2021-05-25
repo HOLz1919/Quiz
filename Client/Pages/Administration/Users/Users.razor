@@ -1,10 +1,4 @@
 ﻿@page "/administration/users"
-@*@using Models.User;
-@inject Services.User.IUserService UserService
-@using System.Linq.Dynamic.Core
-@inject TooltipService tooltipService
-@inject DialogService DialogService
-@inject NavigationManager NavigationManager
 
 
 <div>
@@ -14,23 +8,28 @@
 <div>
     <RadzenDialog />
 </div>
+
+
 <div class="users-container">
-    <RadzenGrid Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="User" PageSize="50" ColumnWidth="150px">
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
+
+
+    <RadzenGrid @ref="usersGrid" Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.UserVM" PageSize="50" ColumnWidth="200px">
         <Columns>
-            <RadzenGridColumn TItem="User" Property="Id" Title="Employee ID" Visible="false" />
-            <RadzenGridColumn TItem="User" Property="Username" Title="Nazwa użytkownika" />
-            <RadzenGridColumn TItem="User" Property="Email" Title="Email" />
-            <RadzenGridColumn TItem="User" Property="FirstName" Title="Imię" />
-            <RadzenGridColumn TItem="User" Property="LastName" Title="Nazwisko" />
-            <RadzenGridColumn TItem="User" Property="Money" Title="Monety" />
-            <RadzenGridColumn TItem="User" Context="user" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="Id" Title="UserId" Visible="false" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="Username" Title="Użytkownik" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="FirstName" Title="Imię" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="LastName" Title="Nazwisko" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="Money" Title="Pieniądze" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Property="Email" Title="Email" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Context="user" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                 <Template Context="user">
-                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(user))" 
-                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))" >
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(user))"
+                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))">
                     </RadzenButton>
                 </Template>
             </RadzenGridColumn>
-            <RadzenGridColumn TItem="User" Context="user" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserVM" Context="user" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
                 <Template Context="user">
                     <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"
                                   Click=@(args => ShowInlineDialog(user.Id,user.Username))
@@ -45,62 +44,35 @@
 
 
 @code {
-    int count;
-    IEnumerable<User> users;
-
-
-    async Task LoadData(LoadDataArgs args)
-    {
-        users = await UserService.GetUsers();
-
-        if (!string.IsNullOrEmpty(args.Filter))
-        {
-            users = users.AsQueryable().Where(args.Filter).ToList();
-        }
-
-        if (!string.IsNullOrEmpty(args.OrderBy))
-        {
-            users = users.AsQueryable().OrderBy(args.OrderBy).ToList();
-        }
-
-        users = users.Skip(args.Skip.Value).Take(args.Top.Value).ToList();
-
-        count = users.Count();
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    async Task Edit(User user)
-    {
-        await Task.Run(() => NavigationManager.NavigateTo("/administration/users/edit/" + user.Id)); 
-    }
-
-
-
-
     void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string message = "") => tooltipService.Open(elementReference, message, options);
 
-    async Task ShowInlineDialog(Guid userId, string username) => await DialogService.OpenAsync("Usuwanie", ds =>
+    async Task ShowInlineDialog(string userId, string name) => await DialogService.OpenAsync("Usuwanie", ds =>
     @<div>
-        <p Style="margin-bottom: 1rem">Czy na pewno chcesz usunąć tego użytkownika? <b> @username </b></p>
+        <p Style="margin-bottom: 1rem"> Czy na pewno chcesz usunąć tego użytkownika? <b> @name </b></p>
         <div class="d-flex justify-content-center">
-            <RadzenButton Text="Tak" Click="(() => { ds.Close(true); Close(true, userId); })" Style=" margin: 0 10px 10px 10px" />
+            <RadzenButton Text="Tak" Click="(async() => { ds.Close(true); await Close(true, userId); })" Style=" margin: 0 10px 10px 10px" />
             <RadzenButton Text="Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
         </div>
     </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
 
 
 
-void Close(bool result, Guid UserId)
-{
-  if (result)
-  {
+    async Task Close(bool result, string categoryId)
+    {
+        if (result)
+        {
+            //var response = await CategoryService.Delete(categoryId);
+            //if (response.IsSuccessful)
+            //{
+            //    await categoriesGrid.Reload();
+            //}
 
-  }
+        }
+
+    }
+
+
+
+
 
 }
-
-
-
-
-}*@
