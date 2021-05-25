@@ -70,6 +70,25 @@
         border: 2px solid #00ff21;
     }
 
+
+.break{
+    cursor: default !important;
+    pointer-events: none !important;
+
+}
+    .break:hover {
+        cursor: default !important;
+
+    }
+
+.correctAnswer {
+    border: 2px solid #00ff21;
+}
+
+.inCorrectAnswer {
+    border: 2px solid #FF0000;
+}
+
 .score {
     flex-grow: 3;
     display: flex;

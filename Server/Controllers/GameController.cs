@@ -7,6 +7,7 @@ using Quiz.Server.Hubs;
 using Quiz.Server.Models;
 using Quiz.Server.Services;
 using Quiz.Shared.Models;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,20 @@ namespace Quiz.Server.Controllers
             var results = await _gameService.GetResults(id);
             return Ok(results);
 
+        }
+
+        [HttpPut("UpdatePoints")]
+        public async Task<IActionResult> UpdatePoints([FromBody] UserMatchView userMatchView)
+        {
+            var result = await _gameService.UpdatePoints(userMatchView);
+
+            if (!result.IsSuccessful)
+                return BadRequest(result);
+
+            var scores = await _gameService.GetResults(userMatchView.MatchId);
+            await _hubContextSingleTable.Clients.Group(userMatchView.MatchId.ToString()).SendAsync("UpdateResult", scores);
+
+            return Ok(result);
         }
 
 

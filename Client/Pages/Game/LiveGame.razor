@@ -11,7 +11,7 @@
                 <div class="answers">
                     @foreach (var answer in tempQuestion.Answers)
                     {
-                        <div class="answer">
+                        <div class="answer @((IsBreak&&answer.IsCorrect?"break correctAnswer": IsBreak&&!answer.IsCorrect?"break inCorrectAnswer":""))"  @onclick="() => SelectAnswer(answer.IsCorrect)">
                             <h4>@answer.Content</h4>
                         </div>
                     }
@@ -21,8 +21,18 @@
             <div class="result-header">
                 <h3>Wyniki</h3>
             </div>
-            <div class="results">
-
+            <div class="d-flex flex-column">
+                @for(int i=0;i< Scores.Count(); i++)
+                {
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="@((UserId==Scores[i].ApplicationUserId?"font-weight-bold":""))">@((i+1)+".") @Scores[i].Username</p>
+                        </div>
+                        <div>
+                            @Scores[i].Points
+                        </div>
+                    </div>
+                }
             </div>
 
         </div>

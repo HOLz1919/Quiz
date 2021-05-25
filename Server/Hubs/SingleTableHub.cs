@@ -31,8 +31,8 @@ namespace Quiz.Server.Hubs
 
         public async Task UpdateResult(string group)
         {
-            var reuslt = _gameService.GetResults(Guid.Parse(group));
-            await Clients.Group(group).SendAsync("UpdateResult", group);
+            var result = await _gameService.GetResults(Guid.Parse(group));
+            await Clients.Group(group).SendAsync("UpdateResult", result);
         }
 
 

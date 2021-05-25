@@ -17,6 +17,7 @@ namespace Quiz.Client.Pages.Game
         public Guid MatchId { get; set; }
         public List<MatchQuestionsView> MatchQuestions = new List<MatchQuestionsView>();
         public MatchQuestionsView tempQuestion = new MatchQuestionsView() { Answers = new List<AnswerVM>() };
+        public List<UserMatchView> Scores = new List<UserMatchView>();
         private string UserId { get; set; }
         [Inject]
         public IGameService GameService { get; set; }
@@ -32,11 +33,12 @@ namespace Quiz.Client.Pages.Game
         public HubConnection Connection { get; set; }
         private int PointsForQuestions { get; set; }
         private int Counter { get; set; } = 1000;
-        private int BreakCounter { get; set; } = 5;
+        private int BreakCounter { get; set; } = 2;
         private static System.Timers.Timer aTimer { get; set; }
         private static System.Timers.Timer BreakTimer { get; set; }
         private int CountOfQuestions { get; set; }
-        private int ActualIteration { get; set; }
+        private int ActualIteration { get; set; } = 0;
+        private bool IsBreak { get; set; } = false;
 
 
         protected override async Task OnInitializedAsync()
@@ -45,6 +47,7 @@ namespace Quiz.Client.Pages.Game
             UserId = await _localStorage.GetItemAsync<string>("UserId");
             MatchQuestions = await GameService.GetQuestions(MatchId);
             CountOfQuestions = MatchQuestions.Count();
+            Scores = await GameService.GetResults(MatchId);
             StartBreakTimer();
             await ConnectToServer();
             await  base.OnInitializedAsync();
@@ -67,16 +70,25 @@ namespace Quiz.Client.Pages.Game
 
             await Connection.InvokeAsync("JoinGroup", MatchId);
 
+            Connection.On<List<UserMatchView>>("UpdateResult", s =>
+            {
+                Scores = s;
+                StateHasChanged();
+            });
 
 
         }
+
+        
 
 
         public void StartTimer()
         {
             Counter = 1000;
+            IsBreak = false;
             aTimer = new System.Timers.Timer(100);
             aTimer.Elapsed += CountDownTimer;
+            tempQuestion = MatchQuestions[ActualIteration];
             aTimer.Enabled = true;
         }
 
@@ -97,11 +109,12 @@ namespace Quiz.Client.Pages.Game
 
         public void StartBreakTimer()
         {
-            BreakCounter = 5;
+
+            BreakCounter = ActualIteration==0?0:2;
+            IsBreak = true;
             BreakTimer = new System.Timers.Timer(1000);
             BreakTimer.Elapsed += CountDownBreakTimer;
             if(ActualIteration>=CountOfQuestions) NavigationManager.NavigateTo("/game/gameresults/" + MatchId);
-            tempQuestion = MatchQuestions[ActualIteration];
             BreakTimer.Enabled = true;
         }
 
@@ -118,6 +131,19 @@ namespace Quiz.Client.Pages.Game
             }
             InvokeAsync(StateHasChanged);
         }
+
+        public async Task SelectAnswer(bool isCorrect)
+        {
+            if (isCorrect)
+            {
+                PointsForQuestions = 1000 + Counter;
+                await GameService.UpdateUserScore(UserId, MatchId, PointsForQuestions);
+            }
+
+            IsBreak = true;
+        }
+
+
 
 
     }

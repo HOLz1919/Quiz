@@ -1,4 +1,24 @@
 ﻿@page "/ranking"
 
-<h1>Hello, world!</h1>
 
+
+<div class="ranking-container">
+
+    <RadzenGrid @ref="resultsGrid" Count="@count" Data="@results" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.ResultsView" PageSize="50" ColumnWidth="400px">
+        <Columns>
+            <RadzenGridColumn Width="100px" TItem="Quiz.Shared.ViewModels.ResultsView" Property="Place" Title="Miejsce" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ResultsView" Property="Username" Title="Użytkownik" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ResultsView" Property="WonMatches" Title="Ilość zwycięstw" />
+
+        </Columns>
+    </RadzenGrid>
+
+</div>
+
+
+@code {
+
+
+
+
+}

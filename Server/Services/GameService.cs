@@ -199,11 +199,34 @@ namespace Quiz.Server.Services
 
         private Task ProcessQuestionAnswer(MatchQuestionsView matchQuestionsView)
         {
-            matchQuestionsView.Answers = _db.Answers.Where(x => x.QuestionId == matchQuestionsView.QuestionId).Select(item=> new AnswerVM() { AnswerId=item.Id, Content=item.Content }).OrderBy(item => Guid.NewGuid()).ToList();
+            matchQuestionsView.Answers = _db.Answers.Where(x => x.QuestionId == matchQuestionsView.QuestionId).Select(item=> new AnswerVM() { AnswerId=item.Id, Content=item.Content, IsCorrect=item.IsCorrect }).OrderBy(item => Guid.NewGuid()).ToList();
 
             return Task.CompletedTask;
 
         }
 
+        public async Task<ResponseDto> UpdatePoints(UserMatchView userMatchView)
+        {
+            ResponseDto responseDto = new ResponseDto();
+            try
+            {
+                var item = await _db.UserMatches.FirstOrDefaultAsync(item => item.MatchId == userMatchView.MatchId && item.ApplicationUserId == userMatchView.ApplicationUserId);
+
+                if(item != null)
+                {
+                    item.Points += userMatchView.Points;
+                    
+                }
+                await _db.SaveChangesAsync();
+                responseDto.IsSuccessful = true;
+                return responseDto;
+            }
+            catch(Exception ex)
+            {
+                responseDto.IsSuccessful = false;
+                responseDto.ErrorMessage = ex.Message;
+            }
+            throw new NotImplementedException();
+        }
     }
 }
