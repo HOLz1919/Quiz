@@ -45,6 +45,8 @@ namespace Quiz.Server.Services
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
+            //var money = new Claim(type: "Money", value:user.Money.ToString());
+            //claims.Add(money);
             return claims;
         }
 

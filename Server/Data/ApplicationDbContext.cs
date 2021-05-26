@@ -50,6 +50,28 @@ namespace Quiz.Server.Data
                 .HasForeignKey(bc => bc.MatchId);
 
 
+            builder.Entity<MatchQuestion>().HasKey(mq => new { mq.MatchId, mq.QuestionId });
+            builder.Entity<MatchQuestion>()
+                .HasOne(bc => bc.Question)
+                .WithMany(b => b.MatchQuestions)
+                .HasForeignKey(bc => bc.QuestionId);
+            builder.Entity<MatchQuestion>()
+                .HasOne(bc => bc.Match)
+                .WithMany(c => c.MatchQuestions)
+                .HasForeignKey(bc => bc.MatchId);
+
+            builder.Entity<UserChallenge>().HasKey(uc => new { uc.ChallengeId, uc.ApplicationUserId });
+            builder.Entity<UserChallenge>()
+                .HasOne(bc => bc.ApplicationUser)
+                .WithMany(b => b.UserChallenges)
+                .HasForeignKey(bc => bc.ApplicationUserId);
+            builder.Entity<UserChallenge>()
+                .HasOne(bc => bc.Challenge)
+                .WithMany(c => c.UserChallenges)
+                .HasForeignKey(bc => bc.ChallengeId);
+
+
+
             base.OnModelCreating(builder);
         }
 
@@ -59,6 +81,8 @@ namespace Quiz.Server.Data
         public DbSet<Match> Matches { get; set; }
         public DbSet<UserMatch> UserMatches { get; set; }
         public DbSet<MatchQuestion> MatchQuestions { get; set; }
+        public DbSet<Challenge> Challenges { get; set; }
+        public DbSet<UserChallenge> UserChallenges { get; set; }
 
         #region Views
 

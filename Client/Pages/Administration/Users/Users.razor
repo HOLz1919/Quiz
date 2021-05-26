@@ -11,8 +11,7 @@
 
 
 <div class="users-container">
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
-
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj"  />
 
     <RadzenGrid @ref="usersGrid" Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.UserVM" PageSize="50" ColumnWidth="200px">
         <Columns>

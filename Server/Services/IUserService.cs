@@ -12,5 +12,7 @@ namespace Quiz.Server.Services
     public interface IUserService
     {
         Task<List<UserVM>> GetAsync();
+        Task<UserVM> GetAsync(string id);
+        Task<UserMoneyDto> GetMoney(string userId);
     }
 }

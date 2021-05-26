@@ -83,7 +83,7 @@ namespace Quiz.Server.Controllers
             await _userManager.UpdateAsync(user);
 
 
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken, UserId=user.Id });
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, RefreshToken = user.RefreshToken, UserId=user.Id, Money=user.Money });
         }
 
 

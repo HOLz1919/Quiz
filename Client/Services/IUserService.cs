@@ -11,5 +11,6 @@ namespace Quiz.Client.Services
     public interface IUserService
     {
         Task<List<UserVM>> Get();
+        Task<UserVM> Get(string UserId);
     }
 }

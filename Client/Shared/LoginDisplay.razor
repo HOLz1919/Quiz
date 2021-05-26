@@ -9,7 +9,7 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="account">@context.User.FindFirst(ClaimTypes.Name).Value </a>
+        <a href="account">@context.User.FindFirst(ClaimTypes.Name).Value @Money <span class="oi oi-dollar" aria-hidden="true"></span></a>
         <a href="logout">Wyloguj się</a>
     </Authorized>
     <NotAuthorized>

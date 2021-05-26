@@ -17,5 +17,6 @@ namespace Quiz.Server.Models
 
         public ICollection<Question> Questions { get; set; }
         public ICollection<Match> Matches { get; set; }
+        public ICollection<Challenge> Challenges { get; set; }
     }
 }

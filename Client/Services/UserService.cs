@@ -33,6 +33,13 @@ namespace Quiz.Client.Services
             return result;
         }
 
-  
+        public async Task<UserVM> Get(string UserId)
+        {
+            var response = await _client.GetAsync("api/user/" + UserId);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<UserVM>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
     }
 }
