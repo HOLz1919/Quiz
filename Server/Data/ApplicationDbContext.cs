@@ -27,6 +27,7 @@ namespace Quiz.Server.Data
             builder.Entity<MatchView>(e => e.ToView("MatchView").HasNoKey());
             builder.Entity<MatchQuestionsView>(e => e.ToView("MatchQuestionsView").HasNoKey());
             builder.Entity<ResultsView>(e => e.ToView("ResultsView").HasNoKey());
+            builder.Entity<ChallengeView>(e => e.ToView("ChallengeView").HasNoKey());
 
             builder.Entity<UserMatch>().HasKey(um => new { um.MatchId, um.ApplicationUserId });
             builder.Entity<UserMatch>()
@@ -91,6 +92,7 @@ namespace Quiz.Server.Data
         public DbSet<MatchView> MatchViews { get; set; }
         public DbSet<MatchQuestionsView> MatchQuestionsView { get; set; }
         public DbSet<ResultsView> ResultsViews { get; set; }
+        public DbSet<ChallengeView> ChallengeViews { get; set; }
 
 
         #endregion

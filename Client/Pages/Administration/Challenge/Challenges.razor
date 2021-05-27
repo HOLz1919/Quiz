@@ -1,4 +1,80 @@
-﻿@page "/administration/challenges"
+﻿
+@page "/administration/challenges"
 
-<h1>Hello, world!</h1>
- 
+
+
+<div>
+    <RadzenTooltip />
+</div>
+
+<div>
+    <RadzenDialog />
+</div>
+
+
+<div class="challenges-container">
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
+
+
+    <RadzenGrid @ref="challengeGrid" Count="@count" Data="@challenges" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.ChallengeView" PageSize="50" ColumnWidth="200px" AllowColumnResize="true">
+        <Columns>
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="Id" Title="QuestionId" Visible="false" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="Title" Title="Tytuł" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="Content" Title="Treść Wyzwania" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="CategoryName" Title="Kategoria" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="Count" Title="Ilość do wykonania" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Property="Reward" Title="Nagroda" />
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Context="challenge" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <Template Context="challenge">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => Edit(challenge))"
+                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Edytuj"))">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="Quiz.Shared.ViewModels.ChallengeView" Context="challenge" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="50px">
+                <Template Context="challenge">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small"
+                                  Click=@(args => ShowInlineDialog(challenge.Id,challenge.Title))
+                                  MouseEnter="@(args => ShowTooltip(args,new TooltipOptions(){ Position = TooltipPosition.Bottom , Style="background-color: #052867"},"Usuń"))">
+                    </RadzenButton>
+                </Template>
+            </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
+
+</div>
+
+
+@code {
+    void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string message = "") => tooltipService.Open(elementReference, message, options);
+
+    async Task ShowInlineDialog(Guid challengeId, string name) => await DialogService.OpenAsync("Usuwanie", ds =>
+    @<div>
+        <p Style="margin-bottom: 1rem"> Czy na pewno chcesz usunąć te wyzwanie? <b> @name </b></p>
+        <div class="d-flex justify-content-center">
+            <RadzenButton Text="Tak" Click="(async() => { ds.Close(true); await Close(true, challengeId); })" Style=" margin: 0 10px 10px 10px" />
+            <RadzenButton Text="Anuluj" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+        </div>
+    </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
+
+
+
+    async Task Close(bool result, Guid challengeId)
+    {
+        if (result)
+        {
+            var response = await ChallengeService.Delete(challengeId);
+            if (response.IsSuccessful)
+            {
+                await challengeGrid.Reload();
+            }
+
+        }
+
+    }
+
+
+
+
+
+}

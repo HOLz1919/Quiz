@@ -3,6 +3,7 @@ using Quiz.Server.Data;
 using Quiz.Server.Models;
 using Quiz.Shared;
 using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,10 +109,9 @@ namespace Quiz.Server.Services
             return challenge != null ? challenge : null;
         }
 
-        public async Task<List<Challenge>> GetAsync()
+        public async Task<List<ChallengeView>> GetAsync()
         {
-            var result = await _db.Challenges.ToListAsync();
-            result.ForEach(item => { item.UserChallenges = null; item.Category = null; });
+            var result = await _db.ChallengeViews.ToListAsync();
             return result;
         }
     }

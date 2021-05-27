@@ -1,6 +1,7 @@
 ﻿using Quiz.Server.Models;
 using Quiz.Shared;
 using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace Quiz.Server.Services
         Task<Challenge> GetAsync(Guid id);
         Task<ResponseDto> EditAsync(Challenge challenge);
         Task<ResponseDto> DeleteAsync(Guid id);
-        Task<List<Challenge>> GetAsync();
+        Task<List<ChallengeView>> GetAsync();
     }
 }

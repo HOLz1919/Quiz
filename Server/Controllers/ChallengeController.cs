@@ -22,6 +22,8 @@ namespace Quiz.Server.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IChallengeService _challengeService;
+
+
         public ChallengeController(ApplicationDbContext db, IChallengeService challengeService)
         {
             _db = db;

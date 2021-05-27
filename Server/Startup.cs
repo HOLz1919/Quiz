@@ -74,6 +74,7 @@ namespace Quiz.Server
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IRankingService, RankingService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IChallengeService, ChallengeService>();
 
 
             //services.AddIdentityServer()
