@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Quiz.Shared.ViewModels
 {
-    public class ResultsView
+    public class StatisticsView
     {
-        public string Username { get; set; }
         public string ApplicationUserId { get; set; }
         public int WonMatches { get; set; }
+        public int MatchCount { get; set; }
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; }
 
