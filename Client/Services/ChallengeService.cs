@@ -67,6 +67,17 @@ namespace Quiz.Client.Services
             return new ResponseDto { IsSuccessful = true };
         }
 
+        public async Task<UserMoneyDto> EndChallenge(UserChallengeVM userChallengeVM)
+        {
+            var content = JsonSerializer.Serialize(userChallengeVM);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await _client.PatchAsync("api/challenge/endChallenge", bodyContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+             var result = JsonSerializer.Deserialize<UserMoneyDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
         public async Task<ChallengeDto> Get(Guid id)
         {
             var response = await _client.GetAsync("api/challenge/" + id);
@@ -82,6 +93,15 @@ namespace Quiz.Client.Services
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var result = JsonSerializer.Deserialize<List<ChallengeView>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
+        public async Task<List<ChallengeUserView>> GetChallengeUser(string id)
+        {
+            var response = await _client.GetAsync("api/challenge/getchallengeuser/"+id);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<List<ChallengeUserView>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
     }

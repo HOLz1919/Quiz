@@ -97,6 +97,40 @@ namespace Quiz.Server.Services
             return responseDto;
         }
 
+        public async Task<UserMoneyDto> EndChallenge(UserChallenge userChallenge)
+        {
+            UserMoneyDto userMoneyDto = new UserMoneyDto();
+            try
+            {
+                var userChallengeMap = await _db.UserChallenges.FirstOrDefaultAsync(item => item.ChallengeId == userChallenge.ChallengeId && item.ApplicationUserId == userChallenge.ApplicationUserId);
+                if (userChallengeMap != null)
+                {
+                    userChallengeMap.Status = 2;
+                }
+                else
+                {
+                    userMoneyDto.ErrorMessage = "Not found user Challenge";
+                    userMoneyDto.IsSuccessful = false;
+                    return userMoneyDto;
+                }
+
+                var reward =  _db.Challenges.FirstOrDefault(item => item.Id == userChallenge.ChallengeId).Reward;
+                var user = await _db.Users.FirstOrDefaultAsync(item => item.Id == userChallenge.ApplicationUserId);
+                user.Money += reward;
+                await _db.SaveChangesAsync();
+                userMoneyDto.IsSuccessful = true;
+                userMoneyDto.Money = reward;
+
+            }
+            catch(Exception ex)
+            {
+                userMoneyDto.IsSuccessful = false;
+                userMoneyDto.Money = 0;
+                userMoneyDto.ErrorMessage = ex.Message;
+            }
+
+            return userMoneyDto;
+        }
 
         public async Task<Challenge> GetAsync(Guid id)
         {
@@ -113,6 +147,96 @@ namespace Quiz.Server.Services
         {
             var result = await _db.ChallengeViews.ToListAsync();
             return result;
+        }
+
+        public async Task<List<ChallengeUserView>> GetChallengeUserAsync(string userId)
+        {
+            try
+            {
+
+                var challengesIds =  _db.Challenges.Select(item => item.Id);
+                var userChallenges = _db.UserChallenges.Where(item => item.ApplicationUserId == userId).Select(item => item.ChallengeId);
+                var notContainsChallenges = challengesIds.Where(item => !userChallenges.Contains(item));
+                List<UserChallenge> userChallengesToAdd = new List<UserChallenge>();
+                foreach(var item in notContainsChallenges)
+                {
+                    userChallengesToAdd.Add(
+                        new UserChallenge()
+                    {
+                        ChallengeId = item,
+                        ApplicationUserId = userId,
+                        Status = 1
+                    }
+                    );
+                }
+
+                //var challengesNotMappedWithUser = await (from c in _db.Challenges
+                //                                         join u in _db.UserChallenges on c.Id equals u.ChallengeId into uj
+                //                                         from x in uj.DefaultIfEmpty()
+                //                                         where  x.ApplicationUserId != userId
+                //                                         select new UserChallenge{ 
+                //                                            ChallengeId=c.Id,
+                //                                            ApplicationUserId=userId,
+                //                                            Status=1 
+                //                                         }).ToListAsync();
+
+                if (userChallengesToAdd.Count > 0)
+                {
+                    await _db.UserChallenges.AddRangeAsync(userChallengesToAdd);
+                    await _db.SaveChangesAsync();
+                }
+
+                var challengesUserView = await (from c in _db.Challenges
+                                                join u in _db.UserChallenges on c.Id equals u.ChallengeId
+                                                join r in _db.ResultsViews on new
+                                                {
+                                                    Key1 = c.CategoryId,
+                                                    Key2 = u.ApplicationUserId
+                                                }
+                                                equals new
+                                                {
+                                                    Key1 = r.CategoryId,
+                                                    Key2 = r.ApplicationUserId
+                                                }
+                                                into result
+                                                from x in result.DefaultIfEmpty()
+                                                where u.ApplicationUserId == userId
+                                                select new ChallengeUserView
+                                                {
+                                                    ChallengeId = c.Id,
+                                                    Title = c.Title,
+                                                    Content = c.Content,
+                                                    Count = c.Count,
+                                                    Reward = c.Reward,
+                                                    UserId = userId,
+                                                    WonMatches = x.WonMatches,
+                                                    Status = u.Status
+
+                                                }).ToListAsync();
+
+                foreach(var item in challengesUserView)
+                {
+                    if (!item.WonMatches.HasValue)
+                        item.WonMatches = 0;
+                    if (item.WonMatches.Value >= item.Count)
+                    {
+                        item.Percentage = 100.0;
+                    }
+                    else
+                    {
+                        item.Percentage = item.WonMatches.Value * 100.0 / item.Count;
+                    }
+                
+                }
+
+                            return challengesUserView;
+
+
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                return new List<ChallengeUserView>();
+            }
         }
     }
 }

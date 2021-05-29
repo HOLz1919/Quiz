@@ -16,5 +16,7 @@ namespace Quiz.Client.Services
         Task<ResponseDto> Delete(Guid id);
         Task<List<ChallengeView>> Get();
 
+        Task<List<ChallengeUserView>> GetChallengeUser(string id);
+        Task<UserMoneyDto> EndChallenge(UserChallengeVM userChallengeVM);
     }
 }

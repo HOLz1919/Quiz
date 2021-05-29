@@ -90,6 +90,30 @@ namespace Quiz.Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet("GetChallengeUser/{id}")]
+        public async Task<IActionResult> GetChallengeUser(string id)
+        {
+            var challenges = await _challengeService.GetChallengeUserAsync(id);
+            if (challenges == null)
+                return NotFound(new { ErrorMessage = "Not found challenges" });
+
+
+            return Ok(challenges);
+
+        }
+
+        [HttpPatch("EndChallenge")]
+        public async Task<IActionResult> EndChallenge([FromBody] UserChallenge userChallenge)
+        {
+
+            var result = await _challengeService.EndChallenge(userChallenge);
+
+            if (!result.IsSuccessful)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
 
     }
 }

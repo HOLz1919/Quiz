@@ -16,5 +16,8 @@ namespace Quiz.Server.Services
         Task<ResponseDto> EditAsync(Challenge challenge);
         Task<ResponseDto> DeleteAsync(Guid id);
         Task<List<ChallengeView>> GetAsync();
+
+        Task<List<ChallengeUserView>> GetChallengeUserAsync(string userId);
+        Task<UserMoneyDto> EndChallenge(UserChallenge userChallenge);
     }
 }
