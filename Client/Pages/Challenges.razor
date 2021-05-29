@@ -1,5 +1,12 @@
 ﻿@page "/challenges"
 
+
+<div>
+    <RadzenDialog />
+</div>
+
+
+
 <div class="challenges-container">
     @foreach (var item in challenges)
     {
@@ -19,7 +26,7 @@
                 }
                 else
                 {
-                    <RadzenButton Style="width: 28%;" Text="Zakończ wyzwanie" Disabled="@(item.WonMatches<item.Count)" Click="async() => await EndChallenge(item.ChallengeId)"/>
+                    <RadzenButton Style="width: 28%;" Text="Zakończ wyzwanie" Disabled="@(item.WonMatches<item.Count)" Click="async() => await EndChallenge(item.ChallengeId)" />
                 }
 
             </div>
@@ -28,3 +35,26 @@
 
 
 </div>
+
+@code{
+
+
+    async Task ShowInlineDialog(string money) => await DialogService.OpenAsync("Informacja", ds =>
+    @<div>
+        <p Style="margin-bottom: 1rem">Gratulacje! Otrzymałeś: <b> @money </b></p>
+        <div class="d-flex justify-content-center">
+            <RadzenButton Text="Zamknij" Click="(() => { ds.Close(true); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+        </div>
+    </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
+
+
+async Task ShowInlineDialogFail() => await DialogService.OpenAsync("Informacja", ds =>
+@<div>
+    <p Style="margin-bottom: 1rem">Coś posżło nie tak</p>
+    <div class="d-flex justify-content-center">
+        <RadzenButton Text="Zamknij" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+    </div>
+</div>, new DialogOptions() { Left = "20vw", Top = "30%" });
+
+
+}
