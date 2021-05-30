@@ -1,0 +1,30 @@
+﻿@page "/game/gameresults/{MatchId:guid}"
+
+
+
+<div class="details-container">
+    <div class="d-flex justify-content-around my-2 flex-column">
+        <h2 class="mx-4">Wyniki</h2>
+            @for (int i = 0; i < Scores.Count(); i++)
+            {
+                <div class="d-flex justify-content-start mx-4">
+                    <div>
+                        <p class="@((UserId==Scores[i].ApplicationUserId?"font-weight-bold":""))">@((i+1)+".") @Scores[i].Username @if (i == 0)
+                                                {<span class="oi oi-star" style="color: yellow" aria-hidden="true"></span>}</p>
+                    </div>
+                    <div class="mx-4">
+                        @Scores[i].Points
+                    </div>
+                </div>
+            }
+        
+    </div>
+</div>
+
+
+
+
+
+@code{
+
+}
