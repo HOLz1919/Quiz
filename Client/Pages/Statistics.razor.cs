@@ -5,6 +5,7 @@ using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Quiz.Client.Pages
@@ -17,7 +18,7 @@ namespace Quiz.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         public List<StatisticsView> StatisticsViewList = new List<StatisticsView>();
-        public List<DataItem[]> charts = new List<DataItem[]>() { new DataItem[] { } };
+        public List<List<DataItem>> charts = new List<List<DataItem>>() { new List<DataItem>()} ;
 
 
         [Inject]
@@ -26,19 +27,18 @@ namespace Quiz.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-
             UserId = await _localStorage.GetItemAsync<string>("UserId");
             StatisticsViewList = await StatisticsService.Get(UserId);
             await SetCharts(StatisticsViewList);
+
+
             await base.OnInitializedAsync();
         }
 
-
-
-
-        private Task SetCharts(List<StatisticsView> statisticsViews)
+        private async Task SetCharts(List<StatisticsView> statisticsViews)
         {
-            for(int i = 0; i < statisticsViews.Count; i++)
+          
+            for (int i = 0; i < statisticsViews.Count; i++)
             {
                 var loseMatch = new DataItem()
                 {
@@ -51,12 +51,12 @@ namespace Quiz.Client.Pages
                     ValueMatch = statisticsViews[i].WonMatches
                 };
 
-                DataItem[] items =new DataItem[] { loseMatch, winMatch};
+                List<DataItem>items =new List<DataItem>() { loseMatch, winMatch};
 
                 charts.Add(items);
 
             }
-            return Task.CompletedTask;
+
         }
 
 

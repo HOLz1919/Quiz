@@ -1,5 +1,6 @@
 ﻿@page "/statistics"
 
+
 <div class="statistics-container">
     <div class="m-4 d-flex justify-content-start">
         @for (int i = 0; i < StatisticsViewList.Count; i++)
@@ -7,13 +8,12 @@
         <div class="m-2 d-flex flex-column justify-content-center">
 
             <h3 class="text-center">@StatisticsViewList[i].CategoryName</h3>
-            @if (i < charts.Count)
-            {
-        <RadzenChart ColorScheme="@ColorScheme.Pastel">
-            <RadzenPieSeries Data="@charts[i]" Title="Ilość" CategoryProperty="Name" ValueProperty="ValueMatch" />
-            <RadzenLegend Visible="false" />
-        </RadzenChart>
-            }
+
+                <RadzenChart ColorScheme="@ColorScheme.Pastel">
+                    <RadzenPieSeries Data="@charts[i]" Title="Ilość" CategoryProperty="Name" ValueProperty="ValueMatch" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+            
 
         </div>
         }

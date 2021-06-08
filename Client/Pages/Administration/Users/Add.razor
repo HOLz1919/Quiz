@@ -1,3 +1,92 @@
-﻿
-<h1>Hello, world!</h1>
+﻿@page "/administration/users/add"
 
+
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin, SuperAdmin")]
+
+@if (ShowError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+<div class="add-container">
+    <div class="my-4">
+        <EditForm Model="@User" OnValidSubmit="OnSubmit">
+
+            <DataAnnotationsValidator />
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="username">Nazwa Użytkownika</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="username" id="username" class="form-control" @bind-Value="@User.Username"></InputText>
+                    <ValidationMessage For="@(() => User.Username)" />
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="password">Hasło</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="password" id="password" class="form-control" type="password" @bind-Value="@User.Password"></InputText>
+                    <ValidationMessage For="@(() => User.Password)" />
+
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="cpassword">Potwierdź Hasło</label>
+                </div>
+                <div class="col-75">
+                    <InputText id="cpassword" class="form-control" type="password" @bind-Value="@User.ConfirmPassword"></InputText>
+                    <ValidationMessage For="@(() => User.ConfirmPassword)" />
+
+                </div>
+            </div>
+            <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="FirstName">Imię</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="FirstName" id="FirstName" class="form-control" @bind-Value="@User.FirstName"></InputText>
+                    <ValidationMessage For="@(() => User.FirstName)" />
+                </div>
+            </div>    <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="LastName">Nazwisko</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="LastName" id="LastName" class="form-control" @bind-Value="@User.LastName"></InputText>
+                    <ValidationMessage For="@(() => User.LastName)" />
+                </div>
+            </div>    <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="Money">Pieniądze</label>
+                </div>
+                <div class="col-75">
+                    <InputNumber name="Money" id="Money" class="form-control" @bind-Value="@User.Money"></InputNumber>
+                    <ValidationMessage For="@(() => User.Money)" />
+                </div>
+            </div>    <div class="row my-2 mx-2">
+                <div class="col-25">
+                    <label for="Email">Email</label>
+                </div>
+                <div class="col-75">
+                    <InputText name="Email" id="Email" class="form-control" @bind-Value="@User.Email"></InputText>
+                    <ValidationMessage For="@(() => User.Email)" />
+                </div>
+            </div>
+            <div class="d-flex justify-content-center flex-row my-2">
+                <input type="submit" class="btn btn-primary" value="Zapisz">
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+
+
+@code {
+
+}

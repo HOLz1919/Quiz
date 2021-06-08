@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Quiz.Client.Pages.Administration.Users
 {
-    public partial class Edit
+    public partial class Add
     {
 
-        [Parameter]
-        public string UserId { get; set; }
-        public Quiz.Shared.ViewModels.UserVM User = new Quiz.Shared.ViewModels.UserVM();
+        public Quiz.Shared.ViewModels.AddUserVM User = new Quiz.Shared.ViewModels.AddUserVM();
         [Inject]
         public IUserService UserService { get; set; }
         [Inject]
@@ -23,7 +21,7 @@ namespace Quiz.Client.Pages.Administration.Users
         public async Task OnSubmit()
         {
             ShowError = false;
-            var result = await UserService.Edit(User);
+            var result = await UserService.Add(User);
             if (!result.IsSuccessful)
             {
                 Error = result.ErrorMessage;
@@ -33,19 +31,9 @@ namespace Quiz.Client.Pages.Administration.Users
             {
                 NavigationManager.NavigateTo("/administration/users");
             }
-          
-            
+
+
         }
-
-        protected override async Task OnInitializedAsync()
-        {
-            var result = await UserService.Get(UserId);
-            User = result;
-            await base.OnInitializedAsync();
-        }
-
-
-
 
 
 

@@ -11,7 +11,7 @@
 
 
 <div class="users-container">
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj"  />
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj" Click="@Add" />
 
     <RadzenGrid @ref="usersGrid" Count="@count" Data="@users" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.UserVM" PageSize="50" ColumnWidth="200px">
         <Columns>
@@ -60,11 +60,11 @@
     {
         if (result)
         {
-            //var response = await CategoryService.Delete(categoryId);
-            //if (response.IsSuccessful)
-            //{
-            //    await categoriesGrid.Reload();
-            //}
+            var response = await UserService.Delete(categoryId);
+            if (response.IsSuccessful)
+            {
+                await usersGrid.Reload();
+            }
 
         }
 

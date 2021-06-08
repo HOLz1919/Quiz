@@ -5,6 +5,8 @@ using Quiz.Server.Data;
 using Quiz.Server.Models;
 using Quiz.Server.Services;
 using Quiz.Shared;
+using Quiz.Shared.Responses;
+using Quiz.Shared.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +63,73 @@ namespace Quiz.Server.Controllers.Administration
             return Ok(result);
         }
 
-        
+        [HttpPost("Add")]
+        public async Task<IActionResult> Add([FromBody] AddUserVM user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { ErrorMessage = "Model is not Valid" });
+            }
+
+            ApplicationUser applicationUser = new ApplicationUser() { UserName = user.Username, FirstName = user.FirstName, LastName = user.LastName, Money = user.Money, Email = user.Email };
+            var result = await _userManager.CreateAsync(applicationUser, user.Password);
+
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new ResponseDto { ErrorMessage = errors.ToString() });
+            }
+
+            await _userManager.AddToRoleAsync(applicationUser, "User");
+
+            return StatusCode(201);
+        }
+
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return BadRequest("User Not Found");
+            }
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+                return BadRequest(new ResponseDto() { ErrorMessage=result.Errors.ToString()});
+
+            return Ok(result);
+        }
+
+        [HttpPut("Edit")]
+        public async Task<IActionResult> Edit([FromBody] UserVM user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { ErrorMessage = "Model is not Valid" });
+            }
+            var userDB = await _userManager.FindByIdAsync(user.Id);
+            if (userDB == null)
+            {
+                return BadRequest("User Not Found");
+            }
+
+            userDB.UserName = user.Username;
+            userDB.Money = user.Money;
+            userDB.Email = user.Email;
+            userDB.FirstName = user.FirstName;
+            userDB.LastName = user.LastName;
+            var result = await _userManager.UpdateAsync(userDB);
+
+
+            if (!result.Succeeded)
+                return BadRequest(new ResponseDto() { ErrorMessage = result.Errors.ToString() });
+
+            return Ok(result);
+        }
+
+
+
 
 
 

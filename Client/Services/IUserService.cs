@@ -12,5 +12,8 @@ namespace Quiz.Client.Services
     {
         Task<List<UserVM>> Get();
         Task<UserVM> Get(string UserId);
+        Task<ResponseDto> Edit(UserVM user);
+        Task<ResponseDto> Delete(string id);
+        Task<ResponseDto> Add(AddUserVM user);
     }
 }
