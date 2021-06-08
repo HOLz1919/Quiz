@@ -31,6 +31,8 @@ namespace Quiz.Server.Services
                 match.Status = (int)MatchStatus.WAITING;
                 await _db.Matches.AddAsync(match);
                 await _db.SaveChangesAsync();
+                var user = await _db.Users.SingleAsync(item => item.Id == match.OwnerId.ToString());
+                user.Money = user.Money - match.Bid;
                 UserMatch userMatch = new UserMatch()
                 {
                     ApplicationUserId = match.OwnerId.ToString(),
@@ -102,6 +104,8 @@ namespace Quiz.Server.Services
             try
             {
                 var result = await _db.Matches.SingleAsync(item => item.Id == matchId);
+                var user = await _db.Users.SingleAsync(item => item.Id == userId);
+                user.Money = user.Money - result.Bid;
                 if(_db.UserMatches.Where(item => item.MatchId == matchId).Count() < result.MaxCountOfPlayers)
                 {
                     UserMatch userMatch = new UserMatch();
@@ -226,7 +230,42 @@ namespace Quiz.Server.Services
                 responseDto.IsSuccessful = false;
                 responseDto.ErrorMessage = ex.Message;
             }
-            throw new NotImplementedException();
+            return responseDto;
+        }
+
+        public async Task<ResponseDto> EndMatch(Guid matchId)
+        {
+            ResponseDto responseDto = new ResponseDto();
+            try
+            {
+                var match = await _db.Matches.FirstOrDefaultAsync(item => item.Id == matchId);
+                if (match == null)
+                {
+                    responseDto.IsSuccessful = false;
+                }
+                else
+                {
+                    if (match.Status != 3)
+                    {
+                        match.Status = 3;
+                        var participants = await _db.UserMatches.Where(item => item.MatchId == match.Id).OrderByDescending(item => item.Points).ToListAsync();
+                        var winner = participants.FirstOrDefault();
+                        var user = await _db.Users.FirstOrDefaultAsync(item => item.Id == winner.ApplicationUserId);
+                        user.Money += match.Bid * participants.Count();
+                        await _db.SaveChangesAsync();
+                        responseDto.IsSuccessful = true;
+                    }
+                   
+                }
+
+               
+            }
+            catch (Exception ex)
+            {
+                responseDto.IsSuccessful = false;
+                responseDto.ErrorMessage = ex.Message;
+            }
+            return responseDto;
         }
     }
 }

@@ -121,33 +121,20 @@ namespace Quiz.Server.Controllers
             return Ok(result);
         }
 
+        [HttpPut("EndMatch")]
+        public async Task<IActionResult> EndMatch([FromBody] Guid MatchId)
+        {
+            var result = await _gameService.EndMatch(MatchId);
 
-        //[HttpDelete("Delete/{id}")]
-        //public async Task<IActionResult> Delete(Guid id)
-        //{
+            if (!result.IsSuccessful)
+                return BadRequest(result);
 
-        //    var result = await _questionService.DeleteAsync(id);
-        //    if (!result.IsSuccessful)
-        //        return BadRequest(result);
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
-        //[HttpPut("Edit")]
-        //public async Task<IActionResult> Edit([FromBody] QuestionVM questionVM)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(new { ErrorMessage = "Model is not Valid" });
-        //    }
 
-        //    var result = await _questionService.EditAsync(questionVM);
 
-        //    if (!result.IsSuccessful)
-        //        return BadRequest(result);
-
-        //    return Ok(result);
-        //}
 
 
 

@@ -43,7 +43,7 @@
     @<div>
         <p Style="margin-bottom: 1rem">Gratulacje! Otrzymałeś: <b> @money </b></p>
         <div class="d-flex justify-content-center">
-            <RadzenButton Text="Zamknij" Click="(() => { ds.Close(true); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+            <RadzenButton Text="Zamknij" Click="(() => { ds.Close(true); Close(); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
         </div>
     </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
 
@@ -52,9 +52,13 @@ async Task ShowInlineDialogFail() => await DialogService.OpenAsync("Informacja",
 @<div>
     <p Style="margin-bottom: 1rem">Coś posżło nie tak</p>
     <div class="d-flex justify-content-center">
-        <RadzenButton Text="Zamknij" Click="(() => { ds.Close(false); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
+        <RadzenButton Text="Zamknij" Click="(() => { ds.Close(false); Close(); })" ButtonStyle="ButtonStyle.Secondary" Style="margin: 0 10px 10px 10px; " />
     </div>
 </div>, new DialogOptions() { Left = "20vw", Top = "30%" });
 
+    async Task Close()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 
 }

@@ -21,11 +21,13 @@ namespace Quiz.Client.Pages.Game
 
         [Inject]
         public IGameService GameService { get; set; }
-
+        [Inject]
+        public NotifierService Notifier { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
+
 
 
 
@@ -34,6 +36,14 @@ namespace Quiz.Client.Pages.Game
 
             UserId = await _localStorage.GetItemAsync<string>("UserId");
             Scores = await GameService.GetResults(MatchId);
+            await GameService.EndMatch(MatchId);
+            var result = await GameService.GetUserMoney(UserId);
+            if (result.IsSuccessful)
+            {
+                await _localStorage.SetItemAsync("money", result.Money);
+                await Notifier.AddTolist("0");
+            }
+            
             await base.OnInitializedAsync();
         }
 

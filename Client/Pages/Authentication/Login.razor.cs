@@ -18,6 +18,10 @@ namespace Quiz.Client.Pages.Authentication
         public NavigationManager NavigationManager { get; set; }
         public bool ShowAuthError { get; set; }
         public string Error { get; set; }
+        [Inject]
+        public NotifierService Notifier { get; set; }
+
+
         public async Task ExecuteLogin()
         {
             ShowAuthError = false;
@@ -29,6 +33,7 @@ namespace Quiz.Client.Pages.Authentication
             }
             else
             {
+                await Notifier.AddTolist("0");
                 NavigationManager.NavigateTo("/game");
             }
         }

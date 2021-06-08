@@ -39,6 +39,7 @@ namespace Quiz.Client
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChallengeService, ChallengeService>();
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+            builder.Services.AddScoped<NotifierService>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<RefreshTokenService>();
             builder.Services.AddScoped<HttpInterceptorService>();

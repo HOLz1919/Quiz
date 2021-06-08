@@ -32,6 +32,20 @@ namespace Quiz.Client.Services
             return result;
         }
 
+        public async Task<ResponseDto> EndMatch(Guid matchId)
+        {
+            var content = JsonSerializer.Serialize(matchId);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await _client.PutAsync("api/game/EndMatch", bodyContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var result = JsonSerializer.Deserialize<ResponseDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result;
+            }
+            return new ResponseDto { IsSuccessful = true };
+        }
+
         public async Task<List<MatchView>> Get()
         {
             var response = await _client.GetAsync("api/game");
@@ -65,6 +79,15 @@ namespace Quiz.Client.Services
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var result = JsonSerializer.Deserialize<List<UserMatchView>>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return result;
+        }
+
+        public async Task<UserMoneyDto> GetUserMoney(string userId)
+        {
+            var response = await _client.GetAsync("api/user/GetUserMoney/" + userId);
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<UserMoneyDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             return result;
         }
 

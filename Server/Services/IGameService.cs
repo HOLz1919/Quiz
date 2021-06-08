@@ -19,5 +19,6 @@ namespace Quiz.Server.Services
         Task<List<UserMatchView>> GetResults(Guid MatchId);
         Task SetMatchStatus(Guid matchId, int status = 2);
         Task<ResponseDto> UpdatePoints(UserMatchView userMatchView);
+        Task<ResponseDto> EndMatch(Guid matchId);
     }
 }

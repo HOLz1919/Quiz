@@ -26,13 +26,19 @@ namespace Quiz.Client.Pages.Game
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public ILocalStorageService _localStorage { get; set; }
+        [Inject]
+        public NotifierService Notifier { get; set; }
+        public int Money { get; set; } = 0;
+
+
 
         RadzenButton joinButton;
 
         protected override async Task OnInitializedAsync()
         {
            UserId = await _localStorage.GetItemAsync<string>("UserId");
-            if (Match.CountOfPlayers >= Match.MaxCountOfPlayers)
+           Money = await _localStorage.GetItemAsync<int>("money");
+            if (Match.CountOfPlayers >= Match.MaxCountOfPlayers || Match.Bid>Money)
             {
                 joinButton.Disabled = true;
             }
@@ -48,8 +54,11 @@ namespace Quiz.Client.Pages.Game
         public async Task Join()
         {
             var result = await GameService.Join(Match.Id, UserId);
+
             if (result.IsSuccessful)
             {
+                await _localStorage.SetItemAsync("money", Money-Match.Bid);
+                await Notifier.AddTolist((Money - Match.Bid).ToString());
                 NavigationManager.NavigateTo("/game/details/" + Match.Id);
             }
     

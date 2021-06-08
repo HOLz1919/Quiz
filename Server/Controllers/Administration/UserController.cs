@@ -54,10 +54,10 @@ namespace Quiz.Server.Controllers.Administration
         }
 
 
-        [HttpGet("GetUserMoney")]
-        public async Task<IActionResult> GetUserMoney(string UserId)
+        [HttpGet("GetUserMoney/{id}")]
+        public async Task<IActionResult> GetUserMoney(string id)
         {
-            var result = await _userService.GetMoney(UserId);
+            var result = await _userService.GetMoney(id);
             if (!result.IsSuccessful)
                 return NotFound(result);
             return Ok(result);
