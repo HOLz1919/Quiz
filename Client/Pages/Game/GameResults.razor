@@ -4,18 +4,19 @@
 
 <div class="details-container">
     <div class="d-flex justify-content-around my-2 flex-column">
-        <h2 class="mx-4">Wyniki</h2>
-            @for (int i = 0; i < Scores.Count(); i++)
-            {
-                <div class="d-flex justify-content-start mx-4">
-                    <div>
-                        <p class="@((UserId==Scores[i].ApplicationUserId?"font-weight-bold":""))">@((i+1)+".") @Scores[i].Username </p>
-                    </div>
-                    <div class="mx-4">
-                        @Scores[i].Points @if (i == 0) {<span class="oi oi-star" style="color: yellow" aria-hidden="true"></span>}
-                    </div>
-                </div>
-            }
+        <h2 class="mx-4 text-center">Wyniki</h2>
+        <RadzenGrid @ref="grid" Count="@count" Data="@scores" LoadData="@LoadData" AllowSorting="true" AllowFiltering="true" AllowPaging="true" TItem="Quiz.Shared.ViewModels.UserMatchView" PageSize="50" ColumnWidth="300px" AllowColumnResize="true" Style="margin-left: 10px; margin-right:10px;">
+            <Columns>
+                    <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserMatchView" Title="Miejsce" Width="100px">
+                        <Template Context="userMatchView">
+                            <RadzenLabel Text="@((Scores.IndexOf(userMatchView) + 1).ToString())" Placeholder="Miejsce" />
+                        </Template>
+                 </RadzenGridColumn>
+                <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserMatchView" Property="Username" Title="Użytkownik" />
+                <RadzenGridColumn TItem="Quiz.Shared.ViewModels.UserMatchView" Property="Points" Title="Punkty" />
+
+            </Columns>
+        </RadzenGrid>
         
     </div>
 </div>
